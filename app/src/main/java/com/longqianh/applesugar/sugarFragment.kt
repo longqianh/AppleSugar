@@ -53,8 +53,8 @@ class sugarFragment : Fragment() {
         val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->}
 
         inference_button.setOnClickListener{
-            val inferFrag=inferFragment()
-            Toast.makeText(requireActivity(),"pressed",Toast.LENGTH_SHORT).show()
+//            val inferFrag=inferFragment()
+//            Toast.makeText(requireActivity(),"pressed",Toast.LENGTH_SHORT).show()
             Navigation.findNavController(it)
                 .navigate(R.id.action_sugarFragment_to_inferFragment)
             Log.d("nav","navgation ok")
@@ -62,7 +62,7 @@ class sugarFragment : Fragment() {
 
         capture_button.setOnClickListener{
 //            getContent.launch("android.media.action.IMAGE_CAPTURE")
-            Toast.makeText(requireActivity(),"capture pressed",Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireActivity(),"Cacha.",Toast.LENGTH_SHORT).show()
         }
     }
 

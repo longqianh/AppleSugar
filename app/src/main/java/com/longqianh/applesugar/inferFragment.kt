@@ -165,7 +165,7 @@ class inferFragment: Fragment(), View.OnClickListener {
             }
 
             R.id.infer_back_button -> {
-                resetButton(v)
+//                resetButton(v)
                 Navigation.findNavController(v).navigateUp()
             }
 
@@ -174,25 +174,25 @@ class inferFragment: Fragment(), View.OnClickListener {
 
 
 
-    private fun resetButton(v:View)
-    {
+//    private fun resetButton(v:View)
+//    {
         // todo: button data binding
-        val btn_680=v.findViewById<Button>(R.id.pick680_button)
-        val btn_720=v.findViewById<Button>(R.id.pick720_button)
-        val btn_760=v.findViewById<Button>(R.id.pick760_button)
-        val btn_780=v.findViewById<Button>(R.id.pick780_button)
-        val btn_800=v.findViewById<Button>(R.id.pick800_button)
-        val btn_810=v.findViewById<Button>(R.id.pick810_button)
-
-        btn_680.setBackgroundResource(android.R.drawable.btn_default);
-        btn_720.setBackgroundResource(android.R.drawable.btn_default);
-        btn_760.setBackgroundResource(android.R.drawable.btn_default);
-        btn_780.setBackgroundResource(android.R.drawable.btn_default);
-        btn_800.setBackgroundResource(android.R.drawable.btn_default);
-        btn_810.setBackgroundResource(android.R.drawable.btn_default);
-        sugar_text.visibility=View.GONE
-
-    }
+//        val btn_680=v.findViewById<Button>(R.id.pick680_button)
+//        val btn_720=v.findViewById<Button>(R.id.pick720_button)
+//        val btn_760=v.findViewById<Button>(R.id.pick760_button)
+//        val btn_780=v.findViewById<Button>(R.id.pick780_button)
+//        val btn_800=v.findViewById<Button>(R.id.pick800_button)
+//        val btn_810=v.findViewById<Button>(R.id.pick810_button)
+//
+//        btn_680.setBackgroundResource(android.R.drawable.btn_default);
+//        btn_720.setBackgroundResource(android.R.drawable.btn_default);
+//        btn_760.setBackgroundResource(android.R.drawable.btn_default);
+//        btn_780.setBackgroundResource(android.R.drawable.btn_default);
+//        btn_800.setBackgroundResource(android.R.drawable.btn_default);
+//        btn_810.setBackgroundResource(android.R.drawable.btn_default);
+//        每次切换的时候Fragment都会重新实列化，重新加载一次数据
+//        sugar_text.visibility=View.GONE
+//    }
 
     private fun loadModelFile(): MappedByteBuffer? {
         val fileDescriptor: AssetFileDescriptor = am.openFd("model.tflite")
@@ -211,7 +211,7 @@ class inferFragment: Fragment(), View.OnClickListener {
 
         interpreter.run( inputs , output )
         val maxIdx = output[0].indices.maxByOrNull{ output[0][it] }?:0
-        Toast.makeText(requireContext(),"Result: $maxIdx,${output[0][maxIdx]}",Toast.LENGTH_SHORT).show()
+//        Toast.makeText(requireContext(),"Result: $maxIdx,${output[0][maxIdx]}",Toast.LENGTH_SHORT).show()
         return 8.0+maxIdx*0.1
     }
 
