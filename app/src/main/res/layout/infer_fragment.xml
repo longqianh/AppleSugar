@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".inferFragment">
+
+
+<!--    <ImageSwitcher-->
+<!--        android:id="@+id/imageSW"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="327dp"></ImageSwitcher>-->
+
+    <Button
+        android:id="@+id/infer_back_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:text="@string/back_button_text" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="371dp"
+        android:layout_gravity="center_horizontal|top"
+
+        tools:src="@tools:sample/avatars" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <Button
+            android:id="@+id/pick680_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:layout_marginTop="@dimen/button_to_top"
+            android:layout_marginEnd="24dp"
+            android:text="@string/button_680_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/pick720_button"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/pick720_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/button_to_top"
+            android:text="@string/button_720_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/pick760_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="@dimen/button_to_top"
+            android:text="@string/button_760_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/pick720_button"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/pick780_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="24dp"
+            android:text="@string/button_780_text"
+            app:layout_constraintEnd_toStartOf="@+id/pick800_button"
+            app:layout_constraintTop_toBottomOf="@+id/pick680_button" />
+
+        <Button
+            android:id="@+id/pick800_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="@string/button_800_text"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/pick720_button" />
+
+        <Button
+            android:id="@+id/pick810_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="24dp"
+            android:text="@string/button_810_text"
+            app:layout_constraintStart_toEndOf="@+id/pick800_button"
+            app:layout_constraintTop_toBottomOf="@+id/pick760_button" />
+
+        <Button
+            android:id="@+id/get_sugar_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="@string/get_sugar_button_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/pick800_button" />
+
+        <TextView
+            android:id="@+id/sugar_text"
+            style="@style/aboutStyle"
+            android:layout_width="263dp"
+            android:layout_height="47dp"
+            android:layout_marginTop="@dimen/layout_margin"
+            android:text=""
+            android:textAlignment="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/get_sugar_button" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

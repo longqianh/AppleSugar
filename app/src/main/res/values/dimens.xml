@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="button_to_top">128dp</dimen>
+    <dimen name="layout_margin">24dp</dimen>
+    <dimen name="small_padding">8dp</dimen>
+    <dimen name="mid_padding">16dp</dimen>
+    <dimen name="text_size">20sp</dimen>
+
+
+
+</resources>

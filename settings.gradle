@@ -1,0 +1,3 @@
+rootProject.name = "AppleSugar"
+include ':app'
+include ':opencv-lib'
