@@ -4,7 +4,8 @@
         This app is designed for apple sugar inference.
         Select wavelength and capture images, after capturing
         images at each wavelength, click inference
-        to get sugar content prediction.</string>
+        to get sugar content prediction.
+        \n\nAuthor: Longqian Huang</string>
     <string name="text_wl_680">680 nm</string>
     <string name="text_wl_700">700 nm</string>
     <string name="text_wl_720">720 nm</string>
@@ -37,5 +38,6 @@
     <string name="button_810_text">810 nm</string>
     <string name="back_button_text">Back</string>
     <string name="button_700_text">700 nm</string>
+    <string name="team_info_text">超级无敌苹果队\n 鲍宇涵, 曹雯, 黄隆钤</string>
 
 </resources>

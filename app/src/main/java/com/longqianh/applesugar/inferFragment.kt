@@ -74,6 +74,7 @@ class inferFragment: Fragment(), View.OnClickListener {
         val back_button: Button = view.findViewById(R.id.infer_back_button)
 
         val button_680: Button = view.findViewById(R.id.pick680_button)
+        val button_700: Button = view.findViewById(R.id.pick700_button)
         val button_720: Button = view.findViewById(R.id.pick720_button)
         val button_760: Button = view.findViewById(R.id.pick760_button)
         val button_780: Button = view.findViewById(R.id.pick780_button)
@@ -93,6 +94,7 @@ class inferFragment: Fragment(), View.OnClickListener {
 
         back_button.setOnClickListener(this)
         button_680.setOnClickListener(this) // click 后会调用 onClick
+        button_700.setOnClickListener(this)
         button_720.setOnClickListener(this)
         button_760.setOnClickListener(this)
         button_780.setOnClickListener(this)

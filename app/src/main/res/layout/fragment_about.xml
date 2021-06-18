@@ -3,16 +3,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".aboutFragment">
 
     <TextView
         android:id="@+id/text_about"
         style="@style/aboutStyle"
         android:layout_width="wrap_content"
-        android:layout_height="138dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:fontFamily="@font/roboto"
         android:text="@string/about_text" />
+
+    <TextView
+        android:id="@+id/textView"
+        style="@style/aboutStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="@dimen/large_margin"
+        android:text="@string/team_info_text"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@color/light_blue_600"/>
 
     <Button
         android:id="@+id/about_back_button"
