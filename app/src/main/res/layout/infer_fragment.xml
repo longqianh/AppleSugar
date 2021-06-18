@@ -19,14 +19,6 @@
         android:layout_gravity="bottom|start"
         android:text="@string/back_button_text" />
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="match_parent"
-        android:layout_height="371dp"
-        android:layout_gravity="center_horizontal|top"
-
-        tools:src="@tools:sample/avatars" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -118,6 +110,37 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/get_sugar_button" />
+
+        <ImageView
+            android:id="@+id/image_origin"
+            android:layout_width="200dp"
+            android:layout_height="240dp"
+            android:layout_marginTop="@dimen/layout_margin"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toStartOf="@+id/image_processed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/avatars" />
+
+        <ImageView
+            android:id="@+id/image_processed"
+            android:layout_width="200dp"
+            android:layout_height="240dp"
+            android:layout_marginTop="@dimen/layout_margin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/avatars" />
+
+        <Button
+            android:id="@+id/pick700_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/layout_margin"
+            android:text="@string/button_700_text"
+            app:layout_constraintBottom_toTopOf="@+id/pick720_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

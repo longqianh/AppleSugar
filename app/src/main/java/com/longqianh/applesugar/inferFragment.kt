@@ -21,6 +21,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
@@ -32,6 +33,7 @@ import org.opencv.imgproc.Imgproc
 import org.opencv.imgproc.Imgproc.*
 import org.tensorflow.lite.Interpreter
 import org.w3c.dom.Text
+import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
 import java.io.InputStream
@@ -49,7 +51,8 @@ class inferFragment: Fragment(), View.OnClickListener {
     private var intensity:Double=0.0
     private var features=DoubleArray(7){ _ ->0.0}
     private lateinit var viewModel: InferViewModel
-    private lateinit var imageIs:ImageView
+    private lateinit var image_origin:ImageView
+    private lateinit var image_processed:ImageView
     private lateinit var contentResolver: ContentResolver
     private lateinit var am:AssetManager
     private lateinit var sugar_text:TextView
@@ -65,7 +68,6 @@ class inferFragment: Fragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri ->
-            imageIs.setImageURI(uri)
             intensity=getIntensity(uri)
         }
 
@@ -80,11 +82,13 @@ class inferFragment: Fragment(), View.OnClickListener {
         val get_sugar_button: Button = view.findViewById(R.id.get_sugar_button)
         sugar_text = view.findViewById(R.id.sugar_text)
         sugar_text.visibility=View.GONE
-        imageIs = view.findViewById(R.id.imageView)
+        image_origin = view.findViewById(R.id.image_origin)
+        image_processed = view.findViewById(R.id.image_processed)
         am = requireContext().assets
-//        val istm: InputStream = am.open("test.jpg")
-//        val bitmap = BitmapFactory.decodeStream(istm)
-//        imageIs.setImageBitmap(bitmap)
+
+//        val testPath="test.jpg"
+//        val testIntensity=testIntensity(testPath)
+//        Toast.makeText(requireContext(),"Test: $testIntensity",Toast.LENGTH_LONG).show()
 
 
         back_button.setOnClickListener(this)
@@ -112,11 +116,20 @@ class inferFragment: Fragment(), View.OnClickListener {
                 Log.i("Button680", "$intensity")
             }
 
-            R.id.pick720_button -> {
+            R.id.pick700_button -> {
                 getContent.launch("image/*")
                 val btn= v.findViewById<Button>(v.id)
                 btn.setBackgroundColor(Color.GREEN)
                 features.set(1, intensity)
+                Toast.makeText(requireContext(), "Button700: $intensity", Toast.LENGTH_SHORT).show()
+                Log.i("Button700", "$intensity")
+            }
+
+            R.id.pick720_button -> {
+                getContent.launch("image/*")
+                val btn= v.findViewById<Button>(v.id)
+                btn.setBackgroundColor(Color.GREEN)
+                features.set(2, intensity)
                 Toast.makeText(requireContext(), "Button720: $intensity", Toast.LENGTH_SHORT).show()
                 Log.i("Button720", "$intensity")
             }
@@ -125,7 +138,7 @@ class inferFragment: Fragment(), View.OnClickListener {
                 getContent.launch("image/*")
                 val btn= v.findViewById<Button>(v.id)
                 btn.setBackgroundColor(Color.GREEN)
-                features.set(2, intensity)
+                features.set(3, intensity)
                 Toast.makeText(requireContext(), "Button760: $intensity", Toast.LENGTH_SHORT).show()
                 Log.i("Button760", "$intensity")
             }
@@ -134,7 +147,7 @@ class inferFragment: Fragment(), View.OnClickListener {
                 getContent.launch("image/*")
                 val btn= v.findViewById<Button>(v.id)
                 btn.setBackgroundColor(Color.GREEN)
-                features.set(3, intensity)
+                features.set(4, intensity)
                 Toast.makeText(requireContext(), "Button780: $intensity", Toast.LENGTH_SHORT).show()
                 Log.i("Button780", "$intensity")
             }
@@ -143,7 +156,7 @@ class inferFragment: Fragment(), View.OnClickListener {
                 getContent.launch("image/*")
                 val btn= v.findViewById<Button>(v.id)
                 btn.setBackgroundColor(Color.GREEN)
-                features.set(4, intensity)
+                features.set(5, intensity)
                 Toast.makeText(requireContext(), "Button800: $intensity", Toast.LENGTH_SHORT).show()
                 Log.i("Button800", "$intensity")
             }
@@ -152,12 +165,14 @@ class inferFragment: Fragment(), View.OnClickListener {
                 getContent.launch("image/*")
                 val btn= v.findViewById<Button>(v.id)
                 btn.setBackgroundColor(Color.GREEN)
-                features.set(5, intensity)
+                features.set(6, intensity)
                 Toast.makeText(requireContext(), "Button810: $intensity", Toast.LENGTH_SHORT).show()
                 Log.i("Button810", "$intensity")
             }
 
             R.id.get_sugar_button -> {
+                Toast.makeText(requireContext(),"input features: [${features[0]},${features[1]}," +
+                        "${features[2]},${features[3]},${features[4]},${features[5]},${features[6]}]",Toast.LENGTH_LONG).show()
                 val sugar=calSugar(features)
                 sugar_text.visibility=View.VISIBLE
                 sugar_text.setText("Apple sugar: $sugar Brix")
@@ -221,14 +236,13 @@ class inferFragment: Fragment(), View.OnClickListener {
         contentResolver=requireContext().getContentResolver()
         val source = ImageDecoder.createSource(contentResolver, uri)
         var bitmap:Bitmap=BitmapFactory.decodeStream(contentResolver.openInputStream(uri))
+        image_origin.setImageBitmap(bitmap)
         val mat = Mat()
         mat.toGray(bitmap)
-//        val resizeimage:Mat = Mat()
         val sz:Size = Size(640.0,480.0)
         resize(mat, mat, sz )
-//        val procBitmap:Bitmap=mat.toBitmap()
         val binary=Mat()
-//        Imgproc.threshold(mat,binary,thresh, 255.0, THRESH_BINARY)
+        threshold(mat,mat, 200.0, 255.0, THRESH_TOZERO_INV)
         threshold(mat,binary, 0.0, 255.0, THRESH_OTSU)
         val kernel = Imgproc.getStructuringElement(MORPH_RECT, Size(2.0, 2.0))
         morphologyEx(binary,binary,MORPH_OPEN, kernel)
@@ -250,11 +264,76 @@ class inferFragment: Fragment(), View.OnClickListener {
         val r_x = (x_index.maxOrNull()!!-x_index.minOrNull()!!) / 2
         val r_max = if(r_y>r_x) r_y else r_x
 
-        val in_bound=0.8
-        val out_bound=0.9
+        val in_bound=0.85
+        val out_bound=0.95
 
-//        var tmp_sum:Double=0.0
-//        var sum_num:Int=0
+        val thres=20.0
+        for(y in 0..mat.cols())
+        {
+            for (x in 0..mat.rows())
+            {
+                val dist=sqrt((x-c_x)*(x-c_x)+(y-c_y)*(y-c_y))
+                if(dist>=out_bound*r_max||dist<=in_bound*r_max)
+                    mat.put(x,y,0.0)
+            }
+        }
+        val mask=Mat()
+        threshold(mat,mask,thres,255.0, THRESH_BINARY)
+        mat.mul(mask)
+        image_processed.setImageBitmap(mat.toBitmap())
+        val mean_val=MatOfDouble()
+        val std_val=MatOfDouble()
+        meanStdDev(mat,mean_val,std_val,mask)
+
+        binary.release()
+        mask.release()
+        std_val.release()
+        mat.release()
+
+        Log.d("getIntensity","$mean_val.toArray()[0]")
+
+        return mean_val.toArray()[0]
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.P)
+    private fun testIntensity(path: String): Double
+    {
+        val istm: InputStream = am.open(path)
+        val bitmap = BitmapFactory.decodeStream(istm)
+        image_origin.setImageBitmap(bitmap)
+        val mat = Mat()
+        mat.toGray(bitmap)
+//        val resizeimage:Mat = Mat()
+        val sz:Size = Size(640.0,480.0)
+        resize(mat, mat, sz )
+//        val procBitmap:Bitmap=mat.toBitmap()
+        val binary=Mat()
+        threshold(mat,binary, 200.0, 255.0, THRESH_TOZERO_INV)
+        threshold(mat,binary, 0.0, 255.0, THRESH_OTSU)
+        val kernel = Imgproc.getStructuringElement(MORPH_RECT, Size(2.0, 2.0))
+        morphologyEx(binary,binary,MORPH_OPEN, kernel)
+        morphologyEx(binary,binary,MORPH_CLOSE, kernel)
+
+        val contour= MatOfPoint()
+        findNonZero(binary,contour)
+        val y_index = mutableListOf<Double>()
+        val x_index = mutableListOf<Double>()
+
+        contour.toArray().forEach {
+            y_index.add(it.x) // col index
+            x_index.add(it.y) // row index
+        }
+
+        val c_y = (y_index.maxOrNull()!!+y_index.minOrNull()!!) / 2 // center
+        val c_x = (x_index.maxOrNull()!!+x_index.minOrNull()!!) / 2
+//        val r_y = (y_index.maxOrNull()!!-y_index.minOrNull()!!) / 2 // radius
+//        val r_x = (x_index.maxOrNull()!!-x_index.minOrNull()!!) / 2
+//        val r_max = if(r_y>r_x) r_y else r_x
+        val r_max=200.0
+        val in_bound=0.85
+        val out_bound=0.95
+
         val thres=20.0
         for(y in 0..mat.cols())
         {
@@ -269,7 +348,7 @@ class inferFragment: Fragment(), View.OnClickListener {
         val mask=Mat()
         threshold(mat,mask,thres,255.0, THRESH_BINARY)
         mat.mul(mask)
-        imageIs.setImageBitmap(mat.toBitmap())
+        image_processed.setImageBitmap(mat.toBitmap())
         val mean_val=MatOfDouble()
         val std_val=MatOfDouble()
         meanStdDev(mat,mean_val,std_val,mask)
@@ -304,7 +383,7 @@ class inferFragment: Fragment(), View.OnClickListener {
         Log.d("drawContour","${contours.get(0).size()}")
         drawContours(mat, contours, -1, color)
         val procbitmap=mat.toBitmap()
-        imageIs.setImageBitmap(procbitmap)
+        image_origin.setImageBitmap(procbitmap)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

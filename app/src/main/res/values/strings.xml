@@ -36,5 +36,6 @@
     <string name="button_800_text">800 nm</string>
     <string name="button_810_text">810 nm</string>
     <string name="back_button_text">Back</string>
+    <string name="button_700_text">700 nm</string>
 
 </resources>
