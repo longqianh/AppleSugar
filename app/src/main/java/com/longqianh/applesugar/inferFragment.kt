@@ -56,6 +56,8 @@ class inferFragment: Fragment(), View.OnClickListener {
     private lateinit var contentResolver: ContentResolver
     private lateinit var am:AssetManager
     private lateinit var sugar_text:TextView
+    private lateinit var show_sugar_text:TextView
+    private var bk= doubleArrayOf(73.88385757200919,78.70864993815162,59.4773811627496,56.495181255526084,58.046548672566374,57.85235907404135,59.61150379925782)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -80,8 +82,10 @@ class inferFragment: Fragment(), View.OnClickListener {
         val button_780: Button = view.findViewById(R.id.pick780_button)
         val button_800: Button = view.findViewById(R.id.pick800_button)
         val button_810: Button = view.findViewById(R.id.pick810_button)
+        val button_fresh: Button = view.findViewById(R.id.fresh_button)
         val get_sugar_button: Button = view.findViewById(R.id.get_sugar_button)
         sugar_text = view.findViewById(R.id.sugar_text)
+        show_sugar_text = view.findViewById(R.id.show_sugar_text)
         sugar_text.visibility=View.GONE
         image_origin = view.findViewById(R.id.image_origin)
         image_processed = view.findViewById(R.id.image_processed)
@@ -91,7 +95,6 @@ class inferFragment: Fragment(), View.OnClickListener {
 //        val testIntensity=testIntensity(testPath)
 //        Toast.makeText(requireContext(),"Test: $testIntensity",Toast.LENGTH_LONG).show()
 
-
         back_button.setOnClickListener(this)
         button_680.setOnClickListener(this) // click 后会调用 onClick
         button_700.setOnClickListener(this)
@@ -100,6 +103,7 @@ class inferFragment: Fragment(), View.OnClickListener {
         button_780.setOnClickListener(this)
         button_800.setOnClickListener(this)
         button_810.setOnClickListener(this)
+        button_fresh.setOnClickListener(this)
         get_sugar_button.setOnClickListener(this)
     }
 
@@ -113,8 +117,8 @@ class inferFragment: Fragment(), View.OnClickListener {
                 getContent.launch("image/*")
                 val btn= v.findViewById<Button>(v.id)
                 btn.setBackgroundColor(Color.GREEN)
-                features.set(0, intensity)
-                Toast.makeText(requireContext(), "Button680: $intensity", Toast.LENGTH_SHORT).show()
+                features.set(0, intensity/bk[0])
+//                Toast.makeText(requireContext(), "Button680: $intensity", Toast.LENGTH_SHORT).show()
                 Log.i("Button680", "$intensity")
             }
 
@@ -122,8 +126,8 @@ class inferFragment: Fragment(), View.OnClickListener {
                 getContent.launch("image/*")
                 val btn= v.findViewById<Button>(v.id)
                 btn.setBackgroundColor(Color.GREEN)
-                features.set(1, intensity)
-                Toast.makeText(requireContext(), "Button700: $intensity", Toast.LENGTH_SHORT).show()
+                features.set(1, intensity/bk[1])
+//                Toast.makeText(requireContext(), "Button700: $intensity", Toast.LENGTH_SHORT).show()
                 Log.i("Button700", "$intensity")
             }
 
@@ -131,8 +135,8 @@ class inferFragment: Fragment(), View.OnClickListener {
                 getContent.launch("image/*")
                 val btn= v.findViewById<Button>(v.id)
                 btn.setBackgroundColor(Color.GREEN)
-                features.set(2, intensity)
-                Toast.makeText(requireContext(), "Button720: $intensity", Toast.LENGTH_SHORT).show()
+                features.set(2, intensity/bk[2])
+//                Toast.makeText(requireContext(), "Button720: $intensity", Toast.LENGTH_SHORT).show()
                 Log.i("Button720", "$intensity")
             }
 
@@ -140,8 +144,8 @@ class inferFragment: Fragment(), View.OnClickListener {
                 getContent.launch("image/*")
                 val btn= v.findViewById<Button>(v.id)
                 btn.setBackgroundColor(Color.GREEN)
-                features.set(3, intensity)
-                Toast.makeText(requireContext(), "Button760: $intensity", Toast.LENGTH_SHORT).show()
+                features.set(3, intensity/bk[3])
+//                Toast.makeText(requireContext(), "Button760: $intensity", Toast.LENGTH_SHORT).show()
                 Log.i("Button760", "$intensity")
             }
 
@@ -149,8 +153,8 @@ class inferFragment: Fragment(), View.OnClickListener {
                 getContent.launch("image/*")
                 val btn= v.findViewById<Button>(v.id)
                 btn.setBackgroundColor(Color.GREEN)
-                features.set(4, intensity)
-                Toast.makeText(requireContext(), "Button780: $intensity", Toast.LENGTH_SHORT).show()
+                features.set(4, intensity/bk[4])
+//                Toast.makeText(requireContext(), "Button780: $intensity", Toast.LENGTH_SHORT).show()
                 Log.i("Button780", "$intensity")
             }
 
@@ -158,8 +162,8 @@ class inferFragment: Fragment(), View.OnClickListener {
                 getContent.launch("image/*")
                 val btn= v.findViewById<Button>(v.id)
                 btn.setBackgroundColor(Color.GREEN)
-                features.set(5, intensity)
-                Toast.makeText(requireContext(), "Button800: $intensity", Toast.LENGTH_SHORT).show()
+                features.set(5, intensity/bk[5])
+//                Toast.makeText(requireContext(), "Button800: $intensity", Toast.LENGTH_SHORT).show()
                 Log.i("Button800", "$intensity")
             }
 
@@ -167,8 +171,8 @@ class inferFragment: Fragment(), View.OnClickListener {
                 getContent.launch("image/*")
                 val btn= v.findViewById<Button>(v.id)
                 btn.setBackgroundColor(Color.GREEN)
-                features.set(6, intensity)
-                Toast.makeText(requireContext(), "Button810: $intensity", Toast.LENGTH_SHORT).show()
+                features.set(6, intensity/bk[6])
+//                Toast.makeText(requireContext(), "Button810: $intensity", Toast.LENGTH_SHORT).show()
                 Log.i("Button810", "$intensity")
             }
 
@@ -185,7 +189,9 @@ class inferFragment: Fragment(), View.OnClickListener {
 //                resetButton(v)
                 Navigation.findNavController(v).navigateUp()
             }
-
+            R.id.fresh_button -> {
+                show_sugar_text.text="$intensity".format("%.2f")
+            }
         }
     }
 
