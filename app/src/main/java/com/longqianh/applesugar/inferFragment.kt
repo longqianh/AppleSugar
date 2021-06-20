@@ -27,6 +27,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import com.longqianh.applesugar.extensions.toBitmap
 import com.longqianh.applesugar.extensions.toGray
+import kotlinx.coroutines.delay
 import org.opencv.core.*
 import org.opencv.core.Core.*
 import org.opencv.imgproc.Imgproc
@@ -57,6 +58,7 @@ class inferFragment: Fragment(), View.OnClickListener {
     private lateinit var am:AssetManager
     private lateinit var sugar_text:TextView
     private lateinit var show_sugar_text:TextView
+    private var tmp_uri: Uri="".toUri()
     private var bk= doubleArrayOf(73.88385757200919,78.70864993815162,59.4773811627496,56.495181255526084,58.046548672566374,57.85235907404135,59.61150379925782)
 
     override fun onCreateView(
@@ -69,10 +71,10 @@ class inferFragment: Fragment(), View.OnClickListener {
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri ->
             intensity=getIntensity(uri)
         }
-
         val back_button: Button = view.findViewById(R.id.infer_back_button)
 
         val button_680: Button = view.findViewById(R.id.pick680_button)
@@ -82,7 +84,7 @@ class inferFragment: Fragment(), View.OnClickListener {
         val button_780: Button = view.findViewById(R.id.pick780_button)
         val button_800: Button = view.findViewById(R.id.pick800_button)
         val button_810: Button = view.findViewById(R.id.pick810_button)
-        val button_fresh: Button = view.findViewById(R.id.fresh_button)
+        val button_fresh: Button = view.findViewById(R.id.pick_button)
         val get_sugar_button: Button = view.findViewById(R.id.get_sugar_button)
         sugar_text = view.findViewById(R.id.sugar_text)
         show_sugar_text = view.findViewById(R.id.show_sugar_text)
@@ -114,66 +116,53 @@ class inferFragment: Fragment(), View.OnClickListener {
         when(v!!.id) {
 
             R.id.pick680_button -> {
-                getContent.launch("image/*")
                 val btn= v.findViewById<Button>(v.id)
                 btn.setBackgroundColor(Color.GREEN)
                 features.set(0, intensity/bk[0])
+                show_sugar_text.text="$intensity"
 //                Toast.makeText(requireContext(), "Button680: $intensity", Toast.LENGTH_SHORT).show()
-                Log.i("Button680", "$intensity")
             }
 
             R.id.pick700_button -> {
-                getContent.launch("image/*")
                 val btn= v.findViewById<Button>(v.id)
                 btn.setBackgroundColor(Color.GREEN)
                 features.set(1, intensity/bk[1])
-//                Toast.makeText(requireContext(), "Button700: $intensity", Toast.LENGTH_SHORT).show()
-                Log.i("Button700", "$intensity")
+                show_sugar_text.text="$intensity"
             }
 
             R.id.pick720_button -> {
-                getContent.launch("image/*")
                 val btn= v.findViewById<Button>(v.id)
                 btn.setBackgroundColor(Color.GREEN)
                 features.set(2, intensity/bk[2])
-//                Toast.makeText(requireContext(), "Button720: $intensity", Toast.LENGTH_SHORT).show()
-                Log.i("Button720", "$intensity")
+                show_sugar_text.text="$intensity"
             }
 
             R.id.pick760_button -> {
-                getContent.launch("image/*")
                 val btn= v.findViewById<Button>(v.id)
                 btn.setBackgroundColor(Color.GREEN)
                 features.set(3, intensity/bk[3])
-//                Toast.makeText(requireContext(), "Button760: $intensity", Toast.LENGTH_SHORT).show()
-                Log.i("Button760", "$intensity")
+                show_sugar_text.text="$intensity"
             }
 
             R.id.pick780_button -> {
-                getContent.launch("image/*")
                 val btn= v.findViewById<Button>(v.id)
                 btn.setBackgroundColor(Color.GREEN)
                 features.set(4, intensity/bk[4])
-//                Toast.makeText(requireContext(), "Button780: $intensity", Toast.LENGTH_SHORT).show()
-                Log.i("Button780", "$intensity")
+                show_sugar_text.text="$intensity"
             }
 
             R.id.pick800_button -> {
-                getContent.launch("image/*")
                 val btn= v.findViewById<Button>(v.id)
                 btn.setBackgroundColor(Color.GREEN)
                 features.set(5, intensity/bk[5])
-//                Toast.makeText(requireContext(), "Button800: $intensity", Toast.LENGTH_SHORT).show()
-                Log.i("Button800", "$intensity")
+                show_sugar_text.text="$intensity"
             }
 
             R.id.pick810_button -> {
-                getContent.launch("image/*")
                 val btn= v.findViewById<Button>(v.id)
                 btn.setBackgroundColor(Color.GREEN)
                 features.set(6, intensity/bk[6])
-//                Toast.makeText(requireContext(), "Button810: $intensity", Toast.LENGTH_SHORT).show()
-                Log.i("Button810", "$intensity")
+                show_sugar_text.text="$intensity"
             }
 
             R.id.get_sugar_button -> {
@@ -189,8 +178,8 @@ class inferFragment: Fragment(), View.OnClickListener {
 //                resetButton(v)
                 Navigation.findNavController(v).navigateUp()
             }
-            R.id.fresh_button -> {
-                show_sugar_text.text="$intensity".format("%.2f")
+            R.id.pick_button -> {
+                getContent.launch("image/*")
             }
         }
     }
