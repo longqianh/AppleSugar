@@ -116,8 +116,6 @@
             android:layout_width="200dp"
             android:layout_height="240dp"
             android:layout_marginTop="@dimen/layout_margin"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintEnd_toStartOf="@+id/image_processed"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@tools:sample/avatars" />

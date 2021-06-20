@@ -93,7 +93,7 @@ class inferFragment: Fragment(), View.OnClickListener {
         image_processed = view.findViewById(R.id.image_processed)
         am = requireContext().assets
 
-//        val testPath="test.jpg"
+//        val testPath="680.jpg"
 //        val testIntensity=testIntensity(testPath)
 //        Toast.makeText(requireContext(),"Test: $testIntensity",Toast.LENGTH_LONG).show()
 
@@ -257,10 +257,10 @@ class inferFragment: Fragment(), View.OnClickListener {
 
         val c_y = (y_index.maxOrNull()!!+y_index.minOrNull()!!) / 2 // center
         val c_x = (x_index.maxOrNull()!!+x_index.minOrNull()!!) / 2
-        val r_y = (y_index.maxOrNull()!!-y_index.minOrNull()!!) / 2 // radius
-        val r_x = (x_index.maxOrNull()!!-x_index.minOrNull()!!) / 2
-        val r_max = if(r_y>r_x) r_y else r_x
-
+//        val r_y = (y_index.maxOrNull()!!-y_index.minOrNull()!!) / 2 // radius
+//        val r_x = (x_index.maxOrNull()!!-x_index.minOrNull()!!) / 2
+//        val r_max = if(r_y>r_x) r_y else r_x
+        val r_max=200.0
         val in_bound=0.85
         val out_bound=0.95
 
@@ -308,7 +308,7 @@ class inferFragment: Fragment(), View.OnClickListener {
         val binary=Mat()
         threshold(mat,binary, 200.0, 255.0, THRESH_TOZERO_INV)
         threshold(mat,binary, 0.0, 255.0, THRESH_OTSU)
-        val kernel = Imgproc.getStructuringElement(MORPH_RECT, Size(2.0, 2.0))
+        val kernel = getStructuringElement(MORPH_RECT, Size(2.0, 2.0))
         morphologyEx(binary,binary,MORPH_OPEN, kernel)
         morphologyEx(binary,binary,MORPH_CLOSE, kernel)
 
