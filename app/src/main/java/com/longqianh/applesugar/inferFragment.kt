@@ -252,8 +252,9 @@ class inferFragment: Fragment(), View.OnClickListener {
         }
         else{
             val output: Array<FloatArray> = arrayOf(FloatArray(101))
+//            Toast.makeText(requireContext(),"Result: $maxIdx,${output[0][maxIdx]}",Toast.LENGTH_SHORT).show()
+            interpreter.run(inputs, output)
             val maxIdx = output[0].indices.maxByOrNull { output[0][it] } ?: 0
-//        Toast.makeText(requireContext(),"Result: $maxIdx,${output[0][maxIdx]}",Toast.LENGTH_SHORT).show()
             return (8.0 + maxIdx * 0.1).toFloat()
         }
 
