@@ -14,10 +14,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -49,17 +46,27 @@ class inferFragment: Fragment(), View.OnClickListener {
     }
 
     private lateinit var getContent: ActivityResultLauncher<String>
-    private var intensity:Double=0.0
-    private var features=DoubleArray(7){ _ ->0.0}
+    private var intensity: Double = 0.0
+    private var features = DoubleArray(7) { _ -> 0.0 }
     private lateinit var viewModel: InferViewModel
-    private lateinit var image_origin:ImageView
-    private lateinit var image_processed:ImageView
+    private lateinit var image_origin: ImageView
+    private lateinit var image_processed: ImageView
     private lateinit var contentResolver: ContentResolver
-    private lateinit var am:AssetManager
-    private lateinit var sugar_text:TextView
-    private lateinit var show_sugar_text:TextView
-    private var tmp_uri: Uri="".toUri()
-    private var bk= doubleArrayOf(73.88385757200919,78.70864993815162,59.4773811627496,56.495181255526084,58.046548672566374,57.85235907404135,59.61150379925782)
+    private lateinit var am: AssetManager
+    private lateinit var sugar_text: TextView
+    private lateinit var show_sugar_text: TextView
+//    private var tmp_uri: Uri = "".toUri()
+    private var bk = doubleArrayOf(
+        76.50252212,
+        81.3847853,
+        61.46050539,
+        58.0978088,
+        59.74946987,
+        59.76914235,
+        61.46982301
+    )
+
+    private var is_reg=false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -73,7 +80,7 @@ class inferFragment: Fragment(), View.OnClickListener {
         super.onViewCreated(view, savedInstanceState)
 
         getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri ->
-            intensity=getIntensity(uri)
+            intensity = getIntensity(uri)
         }
         val back_button: Button = view.findViewById(R.id.infer_back_button)
 
@@ -86,9 +93,10 @@ class inferFragment: Fragment(), View.OnClickListener {
         val button_810: Button = view.findViewById(R.id.pick810_button)
         val button_fresh: Button = view.findViewById(R.id.pick_button)
         val get_sugar_button: Button = view.findViewById(R.id.get_sugar_button)
+        val model_switch: Switch = view.findViewById(R.id.model_switch)
         sugar_text = view.findViewById(R.id.sugar_text)
         show_sugar_text = view.findViewById(R.id.show_sugar_text)
-        sugar_text.visibility=View.GONE
+        sugar_text.visibility = View.GONE
         image_origin = view.findViewById(R.id.image_origin)
         image_processed = view.findViewById(R.id.image_processed)
         am = requireContext().assets
@@ -107,69 +115,73 @@ class inferFragment: Fragment(), View.OnClickListener {
         button_810.setOnClickListener(this)
         button_fresh.setOnClickListener(this)
         get_sugar_button.setOnClickListener(this)
+        model_switch.setOnClickListener(this)
     }
 
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onClick(v: View?) {
 
-
-        when(v!!.id) {
+        when (v!!.id) {
 
             R.id.pick680_button -> {
-                val btn= v.findViewById<Button>(v.id)
+                val btn = v.findViewById<Button>(v.id)
                 btn.setBackgroundColor(Color.GREEN)
-                features.set(0, intensity/bk[0])
-                show_sugar_text.text="$intensity"
+                features.set(0, intensity / bk[0])
+                show_sugar_text.text = "$intensity"
 //                Toast.makeText(requireContext(), "Button680: $intensity", Toast.LENGTH_SHORT).show()
             }
 
             R.id.pick700_button -> {
-                val btn= v.findViewById<Button>(v.id)
+                val btn = v.findViewById<Button>(v.id)
                 btn.setBackgroundColor(Color.GREEN)
-                features.set(1, intensity/bk[1])
-                show_sugar_text.text="$intensity"
+                features.set(1, intensity / bk[1])
+                show_sugar_text.text = "$intensity"
             }
 
             R.id.pick720_button -> {
-                val btn= v.findViewById<Button>(v.id)
+                val btn = v.findViewById<Button>(v.id)
                 btn.setBackgroundColor(Color.GREEN)
-                features.set(2, intensity/bk[2])
-                show_sugar_text.text="$intensity"
+                features.set(2, intensity / bk[2])
+                show_sugar_text.text = "$intensity"
             }
 
             R.id.pick760_button -> {
-                val btn= v.findViewById<Button>(v.id)
+                val btn = v.findViewById<Button>(v.id)
                 btn.setBackgroundColor(Color.GREEN)
-                features.set(3, intensity/bk[3])
-                show_sugar_text.text="$intensity"
+                features.set(3, intensity / bk[3])
+                show_sugar_text.text = "$intensity"
             }
 
             R.id.pick780_button -> {
-                val btn= v.findViewById<Button>(v.id)
+                val btn = v.findViewById<Button>(v.id)
                 btn.setBackgroundColor(Color.GREEN)
-                features.set(4, intensity/bk[4])
-                show_sugar_text.text="$intensity"
+                features.set(4, intensity / bk[4])
+                show_sugar_text.text = "$intensity"
             }
 
             R.id.pick800_button -> {
-                val btn= v.findViewById<Button>(v.id)
+                val btn = v.findViewById<Button>(v.id)
                 btn.setBackgroundColor(Color.GREEN)
-                features.set(5, intensity/bk[5])
-                show_sugar_text.text="$intensity"
+                features.set(5, intensity / bk[5])
+                show_sugar_text.text = "$intensity"
             }
 
             R.id.pick810_button -> {
-                val btn= v.findViewById<Button>(v.id)
+                val btn = v.findViewById<Button>(v.id)
                 btn.setBackgroundColor(Color.GREEN)
-                features.set(6, intensity/bk[6])
-                show_sugar_text.text="$intensity"
+                features.set(6, intensity / bk[6])
+                show_sugar_text.text = "$intensity"
             }
 
             R.id.get_sugar_button -> {
-                Toast.makeText(requireContext(),"input features: [${features[0]},${features[1]}," +
-                        "${features[2]},${features[3]},${features[4]},${features[5]},${features[6]}]",Toast.LENGTH_LONG).show()
-                val sugar=calSugar(features)
-                sugar_text.visibility=View.VISIBLE
+                Toast.makeText(
+                    requireContext(),
+                    "input features: [${features[0]},${features[1]}," +
+                            "${features[2]},${features[3]},${features[4]},${features[5]},${features[6]}]",
+                    Toast.LENGTH_LONG
+                ).show()
+                val sugar = calSugar(features)
+                sugar_text.visibility = View.VISIBLE
                 sugar_text.setText("Apple sugar: $sugar Brix")
 
             }
@@ -181,14 +193,23 @@ class inferFragment: Fragment(), View.OnClickListener {
             R.id.pick_button -> {
                 getContent.launch("image/*")
             }
+
+            R.id.model_switch -> {
+                is_reg=!is_reg
+                if(is_reg==true)
+                {
+                    Toast.makeText(requireContext(),"Change to Regresion Model.",Toast.LENGTH_SHORT).show()
+                }
+                else{
+                    Toast.makeText(requireContext(),"Change to Classification Model.",Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 
 
-
 //    private fun resetButton(v:View)
 //    {
-        // todo: button data binding
 //        val btn_680=v.findViewById<Button>(R.id.pick680_button)
 //        val btn_720=v.findViewById<Button>(R.id.pick720_button)
 //        val btn_760=v.findViewById<Button>(R.id.pick760_button)
@@ -207,7 +228,12 @@ class inferFragment: Fragment(), View.OnClickListener {
 //    }
 
     private fun loadModelFile(): MappedByteBuffer? {
-        val fileDescriptor: AssetFileDescriptor = am.openFd("model.tflite")
+        var modelPath="model_reg5.tflite"
+        if (is_reg==false)
+        {
+            modelPath="model_0624_cla_good.tflite"
+        }
+        val fileDescriptor: AssetFileDescriptor = am.openFd(modelPath)
         val inputStream = FileInputStream(fileDescriptor.fileDescriptor)
         val fileChannel: FileChannel = inputStream.channel
         val startOffset: Long = fileDescriptor.startOffset
@@ -215,38 +241,43 @@ class inferFragment: Fragment(), View.OnClickListener {
         return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength)
     }
 
-    private fun calSugar(sequence:DoubleArray):Double
-    {
+    private fun calSugar(sequence: DoubleArray): Float {
         val interpreter = Interpreter(loadModelFile()!!)
-        val inputs : Array<FloatArray> = arrayOf( sequence.map{ it.toFloat() }.toFloatArray() )
-        val output: Array<FloatArray> = arrayOf(FloatArray(101))
-
-        interpreter.run( inputs , output )
-        val maxIdx = output[0].indices.maxByOrNull{ output[0][it] }?:0
+        val inputs: Array<FloatArray> = arrayOf(sequence.map { it.toFloat() }.toFloatArray())
+        if(is_reg==true)
+        {
+            val output: Array<FloatArray> = arrayOf(FloatArray(1))
+            interpreter.run(inputs, output)
+            return output[0][0]
+        }
+        else{
+            val output: Array<FloatArray> = arrayOf(FloatArray(101))
+            val maxIdx = output[0].indices.maxByOrNull { output[0][it] } ?: 0
 //        Toast.makeText(requireContext(),"Result: $maxIdx,${output[0][maxIdx]}",Toast.LENGTH_SHORT).show()
-        return 8.0+maxIdx*0.1
+            return (8.0 + maxIdx * 0.1).toFloat()
+        }
+
     }
 
     @RequiresApi(Build.VERSION_CODES.P)
-    private fun getIntensity(uri: Uri): Double
-    {
-        contentResolver=requireContext().getContentResolver()
+    private fun getIntensity(uri: Uri): Double {
+        contentResolver = requireContext().getContentResolver()
         val source = ImageDecoder.createSource(contentResolver, uri)
-        var bitmap:Bitmap=BitmapFactory.decodeStream(contentResolver.openInputStream(uri))
+        val bitmap: Bitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(uri))
         image_origin.setImageBitmap(bitmap)
         val mat = Mat()
         mat.toGray(bitmap)
-        val sz:Size = Size(640.0,480.0)
-        resize(mat, mat, sz )
-        val binary=Mat()
-        threshold(mat,mat, 200.0, 255.0, THRESH_TOZERO_INV)
-        threshold(mat,binary, 0.0, 255.0, THRESH_OTSU)
+        val sz: Size = Size(640.0, 480.0)
+        resize(mat, mat, sz)
+        val binary = Mat()
+        threshold(mat, mat, 200.0, 255.0, THRESH_TOZERO_INV)
+        threshold(mat, binary, 0.0, 255.0, THRESH_OTSU)
         val kernel = Imgproc.getStructuringElement(MORPH_RECT, Size(2.0, 2.0))
-        morphologyEx(binary,binary,MORPH_OPEN, kernel)
-        morphologyEx(binary,binary,MORPH_CLOSE, kernel)
+        morphologyEx(binary, binary, MORPH_OPEN, kernel)
+        morphologyEx(binary, binary, MORPH_CLOSE, kernel)
 
-        val contour= MatOfPoint()
-        findNonZero(binary,contour)
+        val contour = MatOfPoint()
+        findNonZero(binary, contour)
         val y_index = mutableListOf<Double>()
         val x_index = mutableListOf<Double>()
 
@@ -255,65 +286,62 @@ class inferFragment: Fragment(), View.OnClickListener {
             x_index.add(it.y) // row index
         }
 
-        val c_y = (y_index.maxOrNull()!!+y_index.minOrNull()!!) / 2 // center
-        val c_x = (x_index.maxOrNull()!!+x_index.minOrNull()!!) / 2
+        val c_y = (y_index.maxOrNull()!! + y_index.minOrNull()!!) / 2 // center
+        val c_x = (x_index.maxOrNull()!! + x_index.minOrNull()!!) / 2
 //        val r_y = (y_index.maxOrNull()!!-y_index.minOrNull()!!) / 2 // radius
 //        val r_x = (x_index.maxOrNull()!!-x_index.minOrNull()!!) / 2
 //        val r_max = if(r_y>r_x) r_y else r_x
-        val r_max=200.0
-        val in_bound=0.85
-        val out_bound=0.95
+        val r_max = 200.0
+        val in_bound = 0.85
+        val out_bound = 0.95
 
-        val thres=20.0
-        for(y in 0..mat.cols())
-        {
-            for (x in 0..mat.rows())
-            {
-                val dist=sqrt((x-c_x)*(x-c_x)+(y-c_y)*(y-c_y))
-                if(dist>=out_bound*r_max||dist<=in_bound*r_max)
-                    mat.put(x,y,0.0)
+        val thres = 20.0
+        for (y in 0..mat.cols()) {
+            for (x in 0..mat.rows()) {
+                val dist = sqrt((x - c_x) * (x - c_x) + (y - c_y) * (y - c_y))
+                if (dist >= out_bound * r_max || dist <= in_bound * r_max)
+                    mat.put(x, y, 0.0)
             }
         }
-        val mask=Mat()
-        threshold(mat,mask,thres,255.0, THRESH_BINARY)
+        val mask = Mat()
+        threshold(mat, mask, thres, 255.0, THRESH_BINARY)
         mat.mul(mask)
         image_processed.setImageBitmap(mat.toBitmap())
-        val mean_val=MatOfDouble()
-        val std_val=MatOfDouble()
-        meanStdDev(mat,mean_val,std_val,mask)
+        val mean_val = MatOfDouble()
+        val std_val = MatOfDouble()
+        meanStdDev(mat, mean_val, std_val, mask)
 
         binary.release()
         mask.release()
         std_val.release()
         mat.release()
 
-        Log.d("getIntensity","$mean_val.toArray()[0]")
+        Log.d("getIntensity", "$mean_val.toArray()[0]")
 
         return mean_val.toArray()[0]
 
     }
 
     @RequiresApi(Build.VERSION_CODES.P)
-    private fun testIntensity(path: String): Double
-    {
+    private fun testIntensity(path: String): Double {
         val istm: InputStream = am.open(path)
         val bitmap = BitmapFactory.decodeStream(istm)
         image_origin.setImageBitmap(bitmap)
         val mat = Mat()
         mat.toGray(bitmap)
 //        val resizeimage:Mat = Mat()
-        val sz:Size = Size(640.0,480.0)
-        resize(mat, mat, sz )
+        val sz: Size = Size(640.0, 480.0)
+        resize(mat, mat, sz)
 //        val procBitmap:Bitmap=mat.toBitmap()
-        val binary=Mat()
-        threshold(mat,binary, 200.0, 255.0, THRESH_TOZERO_INV)
-        threshold(mat,binary, 0.0, 255.0, THRESH_OTSU)
+        val binary = Mat()
+        threshold(mat, binary, 200.0, 255.0, THRESH_TOZERO_INV)
+        threshold(mat, binary, 0.0, 255.0, THRESH_OTSU)
         val kernel = getStructuringElement(MORPH_RECT, Size(2.0, 2.0))
-        morphologyEx(binary,binary,MORPH_OPEN, kernel)
-        morphologyEx(binary,binary,MORPH_CLOSE, kernel)
+        morphologyEx(binary, binary, MORPH_OPEN, kernel)
+        morphologyEx(binary, binary, MORPH_CLOSE, kernel)
 
-        val contour= MatOfPoint()
-        findNonZero(binary,contour)
+        val contour = MatOfPoint()
+        findNonZero(binary, contour)
         val y_index = mutableListOf<Double>()
         val x_index = mutableListOf<Double>()
 
@@ -322,33 +350,31 @@ class inferFragment: Fragment(), View.OnClickListener {
             x_index.add(it.y) // row index
         }
 
-        val c_y = (y_index.maxOrNull()!!+y_index.minOrNull()!!) / 2 // center
-        val c_x = (x_index.maxOrNull()!!+x_index.minOrNull()!!) / 2
+        val c_y = (y_index.maxOrNull()!! + y_index.minOrNull()!!) / 2 // center
+        val c_x = (x_index.maxOrNull()!! + x_index.minOrNull()!!) / 2
 //        val r_y = (y_index.maxOrNull()!!-y_index.minOrNull()!!) / 2 // radius
 //        val r_x = (x_index.maxOrNull()!!-x_index.minOrNull()!!) / 2
 //        val r_max = if(r_y>r_x) r_y else r_x
-        val r_max=200.0
-        val in_bound=0.85
-        val out_bound=0.95
+        val r_max = 200.0
+        val in_bound = 0.85
+        val out_bound = 0.95
 
-        val thres=20.0
-        for(y in 0..mat.cols())
-        {
-            for (x in 0..mat.rows())
-            {
-                val dist=sqrt((x-c_x)*(x-c_x)+(y-c_y)*(y-c_y))
-                if(dist>=out_bound*r_max||dist<=in_bound*r_max)
-                    mat.put(x,y,0.0)
+        val thres = 20.0
+        for (y in 0..mat.cols()) {
+            for (x in 0..mat.rows()) {
+                val dist = sqrt((x - c_x) * (x - c_x) + (y - c_y) * (y - c_y))
+                if (dist >= out_bound * r_max || dist <= in_bound * r_max)
+                    mat.put(x, y, 0.0)
 
             }
         }
-        val mask=Mat()
-        threshold(mat,mask,thres,255.0, THRESH_BINARY)
+        val mask = Mat()
+        threshold(mat, mask, thres, 255.0, THRESH_BINARY)
         mat.mul(mask)
         image_processed.setImageBitmap(mat.toBitmap())
-        val mean_val=MatOfDouble()
-        val std_val=MatOfDouble()
-        meanStdDev(mat,mean_val,std_val,mask)
+        val mean_val = MatOfDouble()
+        val std_val = MatOfDouble()
+        meanStdDev(mat, mean_val, std_val, mask)
 //        val res=mean(mat,mask)
 //        println("${res::class.qualifiedName}")
 //        Log.d("res","${res[0]}, ${res[1]}, ${res[2]}, ${res[3]}")
@@ -363,23 +389,18 @@ class inferFragment: Fragment(), View.OnClickListener {
     }
 
 
-    private fun drawContour(bitmap: Bitmap)
-    {
+    private fun drawContour(bitmap: Bitmap) {
         val mat = Mat()
         mat.toGray(bitmap)
-        val binary=Mat()
-        threshold(mat,binary, 0.0, 255.0, THRESH_OTSU)
-        val contours= mutableListOf<MatOfPoint>()
-        val hierarchy=Mat()
-        findContours(binary,contours,hierarchy,RETR_TREE, CHAIN_APPROX_SIMPLE)
-        val color=Scalar(120.0,155.0,0.0)
-//        for(i in 0 until contours.count())
-//        {
-//            // judge(countors.get(i))
-//        }
-        Log.d("drawContour","${contours.get(0).size()}")
+        val binary = Mat()
+        threshold(mat, binary, 0.0, 255.0, THRESH_OTSU)
+        val contours = mutableListOf<MatOfPoint>()
+        val hierarchy = Mat()
+        findContours(binary, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE)
+        val color = Scalar(120.0, 155.0, 0.0)
+        Log.d("drawContour", "${contours.get(0).size()}")
         drawContours(mat, contours, -1, color)
-        val procbitmap=mat.toBitmap()
+        val procbitmap = mat.toBitmap()
         image_origin.setImageBitmap(procbitmap)
     }
 
@@ -389,41 +410,11 @@ class inferFragment: Fragment(), View.OnClickListener {
         // TODO: Use the ViewModel
     }
 
-
-// todo: multi button listener
-
-
-//    private fun pickImageIntent(){
-//        val intent:Intent= Intent()
-//        intent.setType("image/*")
-////        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true)
-//        intent.setAction(Intent.ACTION_GET_CONTENT)
-//        startActivityForResult(Intent.createChooser(intent,"Select Image"),PICK_IMAGES_CODE)
-//        Log.d("pickImageIntent", "end of picking intent")
-//    }
-
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//        Log.d("onActivityResult", "activity result")
-//        if (requestCode==PICK_IMAGES_CODE)
-//        {
-//            if (resultCode==Activity.RESULT_OK)
-//            {
-//                if (data != null) {
-//                    if (data.getClipData()!=null) {
-//                        val imageUri:Uri=data.getClipData()?.getItemAt(0)!!.getUri()
-//                        imageUris.add(imageUri)
-//                        imageIs.setImageURI(imageUris.get(0))
-//                    }
-//                    else{
-//                        val imageUri: Uri =data.getData() as Uri
-//                        imageUris.add(imageUri)
-//                        imageIs.setImageURI(imageUris.get(0))
-//                    }
-//                }
-//
-//            }
-//        }
-//    }
-
 }
+
+// todo: be able to manually set the bk value
+// todo: debug why it become slower when pick more times (memory leak?)
+// todo: layout beautify
+// todo: slide back should be confirmed
+// todo: button data binding
+// todo: softmax need not
