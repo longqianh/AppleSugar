@@ -1,5 +1,6 @@
 package com.longqianh.applesugar
 
+import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.res.AssetFileDescriptor
 import android.content.res.AssetManager
@@ -11,9 +12,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -72,9 +71,11 @@ class inferFragment: Fragment(), View.OnClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        setHasOptionsMenu(true)
         return inflater.inflate(R.layout.infer_fragment, container, false)
     }
 
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -207,25 +208,25 @@ class inferFragment: Fragment(), View.OnClickListener {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.menu_main,menu)
+    }
 
-//    private fun resetButton(v:View)
-//    {
-//        val btn_680=v.findViewById<Button>(R.id.pick680_button)
-//        val btn_720=v.findViewById<Button>(R.id.pick720_button)
-//        val btn_760=v.findViewById<Button>(R.id.pick760_button)
-//        val btn_780=v.findViewById<Button>(R.id.pick780_button)
-//        val btn_800=v.findViewById<Button>(R.id.pick800_button)
-//        val btn_810=v.findViewById<Button>(R.id.pick810_button)
-//
-//        btn_680.setBackgroundResource(android.R.drawable.btn_default);
-//        btn_720.setBackgroundResource(android.R.drawable.btn_default);
-//        btn_760.setBackgroundResource(android.R.drawable.btn_default);
-//        btn_780.setBackgroundResource(android.R.drawable.btn_default);
-//        btn_800.setBackgroundResource(android.R.drawable.btn_default);
-//        btn_810.setBackgroundResource(android.R.drawable.btn_default);
-//        每次切换的时候Fragment都会重新实列化，重新加载一次数据
-//        sugar_text.visibility=View.GONE
-//    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_about -> {
+                Navigation.findNavController(requireView()).navigate(R.id.action_inferFragment_to_aboutFragment)
+                true
+            }
+            R.id.menu_help ->{
+                Navigation.findNavController(requireView()).navigate(R.id.action_inferFragment_to_helpFragment)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
 
     private fun loadModelFile(modelPath: String): MappedByteBuffer? {
 
@@ -238,23 +239,19 @@ class inferFragment: Fragment(), View.OnClickListener {
     }
 
     private fun calSugar(sequence: DoubleArray): Float {
-//        var modelPath="model_reg5.tflite"
-//        if (is_reg==false)
-//        {
-//            modelPath="model_0624_cla_good.tflite"
-//        }
+
         val inputs: Array<FloatArray> = arrayOf(sequence.map { it.toFloat() }.toFloatArray())
         if(is_reg==true)
         {
-            val modelPath="model_reg5.tflite"
+            val modelPath="model_reg6.tflite"
             val interpreter = Interpreter(loadModelFile(modelPath)!!)
             val output: Array<FloatArray> = arrayOf(FloatArray(1))
             interpreter.run(inputs, output)
             return output[0][0]
         }
         else{
-            val modelPath1="model_0624_cla_good.tflite"
-            val modelPath2="model_cla0625_1.tflite"
+            val modelPath1="model_cla_test.tflite"
+            val modelPath2="model_cla1.tflite"
             val interpreter1 = Interpreter(loadModelFile(modelPath1)!!)
             val interpreter2 = Interpreter(loadModelFile(modelPath2)!!)
             val output: Array<FloatArray> = arrayOf(FloatArray(101))
@@ -272,13 +269,14 @@ class inferFragment: Fragment(), View.OnClickListener {
     @RequiresApi(Build.VERSION_CODES.P)
     private fun getIntensity(uri: Uri): Double {
         contentResolver = requireContext().getContentResolver()
-        val source = ImageDecoder.createSource(contentResolver, uri)
+//        val source = ImageDecoder.createSource(contentResolver, uri)
         val bitmap: Bitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(uri))
-        image_origin.setImageBitmap(bitmap)
+
         val mat = Mat()
         mat.toGray(bitmap)
         val sz: Size = Size(640.0, 480.0)
         resize(mat, mat, sz)
+        image_origin.setImageBitmap(mat.toBitmap())
         val binary = Mat()
         threshold(mat, mat, 200.0, 255.0, THRESH_TOZERO_INV)
         threshold(mat, binary, 0.0, 255.0, THRESH_OTSU)

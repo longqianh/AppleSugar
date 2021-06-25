@@ -3,6 +3,8 @@ package com.longqianh.applesugar
 
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Button
 import android.widget.ImageSwitcher
 import android.widget.Toast
@@ -28,6 +30,8 @@ class MainActivity : AppCompatActivity() {
 //        val sugarFrag=sugarFragment()
 //        supportFragmentManager.beginTransaction().add(R.id.fragment_container,sugarFrag).commit()
     }
+
+
 }
 
 // todo: add help menu

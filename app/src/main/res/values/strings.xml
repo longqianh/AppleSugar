@@ -6,6 +6,26 @@
         images at each wavelength, click inference
         to get sugar content prediction.
         \n\nAuthor: Longqian Huang</string>
+    <string name="help_text">
+        To use the app, first use the phone camera to get images corresponding 7 wavelengths.
+        The camera parameter should be set as the following instruction:\n\n
+        Whitebalance: sunligh\n
+        Focal length: 27mm\n
+        680nm: ISO-50, Speed-1/125\n
+        700nm: ISO-125, Speed-1/160\n
+        720nm: ISO-125, Speed-1/125\n
+        760nm: ISO-400, Speed-1/40\n
+        780nm: ISO-800, Speed-1/20\n
+        800nm: ISO-3200, Speed-1/30\n
+        810nm: ISO-3200, Speed-1/15\n\n
+        After obtaining 7 images, press Inference button to get into inference page.
+        Use Pick button to select one image and click the corresponding wavelength to
+        set feature on it. \n\n
+        When each wavelength button becomes green, press Get Sugar to obtain
+        sugar content prediction. \n\n
+        Use Cla|Reg switch to change deep learning models, switch left to use classification
+        model, right to use regression model.
+    </string>
     <string name="text_wl_680">680 nm</string>
     <string name="text_wl_700">700 nm</string>
     <string name="text_wl_720">720 nm</string>
@@ -38,6 +58,9 @@
     <string name="button_810_text">810 nm</string>
     <string name="back_button_text">Back</string>
     <string name="button_700_text">700 nm</string>
-    <string name="team_info_text">超级无敌苹果队\n 鲍宇涵, 曹雯, 黄隆钤</string>
+    <string name="team_info_text">超级无敌苹果队\n 鲍宇涵, 曹雯, 黄隆钤\n 浙江大学</string>
+    <string name="menu_about_text">About</string>
+    <string name="menu_help_text">Help</string>
+    <string name="app_info_text">AI Sugar</string>
 
 </resources>

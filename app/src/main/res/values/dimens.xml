@@ -6,6 +6,7 @@
     <dimen name="mid_padding">16dp</dimen>
     <dimen name="text_size">20sp</dimen>
     <dimen name="large_margin">64dp</dimen>
+    <dimen name="huge_margin">64dp</dimen>
 
 
 </resources>

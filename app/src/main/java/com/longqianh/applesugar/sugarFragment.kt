@@ -9,9 +9,6 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.Navigation
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.NavigationUI
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -68,12 +65,21 @@ class sugarFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.overflow_menu,menu)
+        inflater.inflate(R.menu.menu_main,menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        Navigation.findNavController(requireView()).navigate(R.id.action_sugarFragment_to_aboutFragment)
-        return super.onOptionsItemSelected(item)
+        return when (item.itemId) {
+            R.id.menu_about -> {
+                Navigation.findNavController(requireView()).navigate(R.id.action_sugarFragment_to_aboutFragment)
+                true
+            }
+            R.id.menu_help ->{
+                Navigation.findNavController(requireView()).navigate(R.id.action_sugarFragment_to_helpFragment)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     companion object {

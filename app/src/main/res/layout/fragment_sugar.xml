@@ -30,5 +30,21 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_gravity="center_horizontal|center_vertical"/>
 
+    <TextView
+        android:id="@+id/appinfoView"
+        style="@style/aboutStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_marginTop="@dimen/huge_margin"
+        android:layout_marginBottom="@dimen/large_margin"
+        android:fontFamily="sans-serif-light"
+        android:text="@string/app_info_text"
+        android:textAlignment="center"
+        android:textColor="@color/purple_500"
+        android:textSize="48sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 
 </FrameLayout>
