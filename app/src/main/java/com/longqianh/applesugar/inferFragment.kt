@@ -227,12 +227,8 @@ class inferFragment: Fragment(), View.OnClickListener {
 //        sugar_text.visibility=View.GONE
 //    }
 
-    private fun loadModelFile(): MappedByteBuffer? {
-        var modelPath="model_reg5.tflite"
-        if (is_reg==false)
-        {
-            modelPath="model_0624_cla_good.tflite"
-        }
+    private fun loadModelFile(modelPath: String): MappedByteBuffer? {
+
         val fileDescriptor: AssetFileDescriptor = am.openFd(modelPath)
         val inputStream = FileInputStream(fileDescriptor.fileDescriptor)
         val fileChannel: FileChannel = inputStream.channel
@@ -242,20 +238,33 @@ class inferFragment: Fragment(), View.OnClickListener {
     }
 
     private fun calSugar(sequence: DoubleArray): Float {
-        val interpreter = Interpreter(loadModelFile()!!)
+//        var modelPath="model_reg5.tflite"
+//        if (is_reg==false)
+//        {
+//            modelPath="model_0624_cla_good.tflite"
+//        }
         val inputs: Array<FloatArray> = arrayOf(sequence.map { it.toFloat() }.toFloatArray())
         if(is_reg==true)
         {
+            val modelPath="model_reg5.tflite"
+            val interpreter = Interpreter(loadModelFile(modelPath)!!)
             val output: Array<FloatArray> = arrayOf(FloatArray(1))
             interpreter.run(inputs, output)
             return output[0][0]
         }
         else{
+            val modelPath1="model_0624_cla_good.tflite"
+            val modelPath2="model_cla0625_1.tflite"
+            val interpreter1 = Interpreter(loadModelFile(modelPath1)!!)
+            val interpreter2 = Interpreter(loadModelFile(modelPath2)!!)
             val output: Array<FloatArray> = arrayOf(FloatArray(101))
 //            Toast.makeText(requireContext(),"Result: $maxIdx,${output[0][maxIdx]}",Toast.LENGTH_SHORT).show()
-            interpreter.run(inputs, output)
-            val maxIdx = output[0].indices.maxByOrNull { output[0][it] } ?: 0
-            return (8.0 + maxIdx * 0.1).toFloat()
+            interpreter1.run(inputs, output)
+            val maxIdx1 = output[0].indices.maxByOrNull { output[0][it] } ?: 0
+            interpreter2.run(inputs, output)
+            val maxIdx2 = output[0].indices.maxByOrNull { output[0][it] } ?: 0
+            Toast.makeText(requireContext(),"model1: ${8.0+maxIdx1*0.1}, model2: ${8.0+maxIdx2*0.1}",Toast.LENGTH_LONG).show()
+            return (8.0 + (maxIdx1+maxIdx2)*0.5 * 0.1).toFloat()
         }
 
     }
