@@ -59,7 +59,9 @@ class sugarFragment : Fragment() {
 
         capture_button.setOnClickListener{
 //            getContent.launch("android.media.action.IMAGE_CAPTURE")
-            Toast.makeText(requireActivity(),"Cacha.",Toast.LENGTH_SHORT).show()
+            Navigation.findNavController(it)
+                .navigate(R.id.action_sugarFragment_to_cameraFragment)
+//            Toast.makeText(requireActivity(),"Cacha.",Toast.LENGTH_SHORT).show()
         }
     }
 

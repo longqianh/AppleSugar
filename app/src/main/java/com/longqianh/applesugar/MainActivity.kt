@@ -34,4 +34,3 @@ class MainActivity : AppCompatActivity() {
 
 }
 
-// todo: add help menu
