@@ -54,7 +54,7 @@ class inferFragment: Fragment(), View.OnClickListener {
     private lateinit var am: AssetManager
     private lateinit var sugar_text: TextView
     private lateinit var show_sugar_text: TextView
-//    private var tmp_uri: Uri = "".toUri()
+//    private var buttonPressed= BooleanArray(7){_->false}
     private var bk = doubleArrayOf(
         76.50252212,
         81.3847853,
@@ -72,6 +72,7 @@ class inferFragment: Fragment(), View.OnClickListener {
         savedInstanceState: Bundle?
     ): View? {
         setHasOptionsMenu(true)
+
         return inflater.inflate(R.layout.infer_fragment, container, false)
     }
 
@@ -126,52 +127,51 @@ class inferFragment: Fragment(), View.OnClickListener {
 
             R.id.pick680_button -> {
                 val btn = v.findViewById<Button>(v.id)
-                btn.setBackgroundColor(Color.GREEN)
+                btn.isSelected=!btn.isSelected
                 features.set(0, intensity / bk[0])
-                show_sugar_text.text = "$intensity"
-//                Toast.makeText(requireContext(), "Button680: $intensity", Toast.LENGTH_SHORT).show()
+                show_sugar_text.text = "${features[0]}"
             }
 
             R.id.pick700_button -> {
                 val btn = v.findViewById<Button>(v.id)
-                btn.setBackgroundColor(Color.GREEN)
+                btn.isSelected=!btn.isSelected
                 features.set(1, intensity / bk[1])
-                show_sugar_text.text = "$intensity"
+                show_sugar_text.text = "${features[1]}"
             }
 
             R.id.pick720_button -> {
                 val btn = v.findViewById<Button>(v.id)
-                btn.setBackgroundColor(Color.GREEN)
+                btn.isSelected=!btn.isSelected
                 features.set(2, intensity / bk[2])
-                show_sugar_text.text = "$intensity"
+                show_sugar_text.text = "${features[2]}"
             }
 
             R.id.pick760_button -> {
                 val btn = v.findViewById<Button>(v.id)
-                btn.setBackgroundColor(Color.GREEN)
+                btn.isSelected=!btn.isSelected
                 features.set(3, intensity / bk[3])
-                show_sugar_text.text = "$intensity"
+                show_sugar_text.text = "${features[3]}"
             }
 
             R.id.pick780_button -> {
                 val btn = v.findViewById<Button>(v.id)
-                btn.setBackgroundColor(Color.GREEN)
+                btn.isSelected=!btn.isSelected
                 features.set(4, intensity / bk[4])
-                show_sugar_text.text = "$intensity"
+                show_sugar_text.text = "${features[4]}"
             }
 
             R.id.pick800_button -> {
                 val btn = v.findViewById<Button>(v.id)
-                btn.setBackgroundColor(Color.GREEN)
+                btn.isSelected=!btn.isSelected
                 features.set(5, intensity / bk[5])
-                show_sugar_text.text = "$intensity"
+                show_sugar_text.text = "${features[5]}"
             }
 
             R.id.pick810_button -> {
                 val btn = v.findViewById<Button>(v.id)
-                btn.setBackgroundColor(Color.GREEN)
+                btn.isSelected=!btn.isSelected
                 features.set(6, intensity / bk[6])
-                show_sugar_text.text = "$intensity"
+                show_sugar_text.text = "${features[6]}"
             }
 
             R.id.get_sugar_button -> {
@@ -207,6 +207,8 @@ class inferFragment: Fragment(), View.OnClickListener {
             }
         }
     }
+
+
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)

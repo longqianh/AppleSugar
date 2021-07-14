@@ -13,12 +13,9 @@ android {
         versionCode 1
         versionName "1.0"
 
-        applicationId "opencv.org"
+        applicationId "longqianh.AiSugar"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-//        ndk {
-//            abiFilters 'armeabi-v7a', 'arm64-v8a' // filter of tflite
-//        }
     }
 
     buildTypes {

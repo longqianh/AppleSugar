@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".cameraFragment">
+
     <Button
         android:id="@+id/camera_capture_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal|bottom"
         android:text="Take\nPhoto" />
+
+
 
     <Button
         android:id="@+id/camera_back_button"
@@ -27,5 +31,14 @@
         app:layout_constraintTop_toTopOf="parent" >
 
     </androidx.camera.view.PreviewView>
+
+    <ImageView
+        android:id="@+id/focusRing"
+        android:layout_width="277dp"
+        android:layout_height="248dp"
+        android:layout_gravity="center_horizontal|center_vertical"
+
+        android:src="@drawable/focus_ring" />
+    <!--        android:visibility="invisible"-->
 
 </FrameLayout>
