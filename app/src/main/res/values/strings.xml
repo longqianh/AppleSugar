@@ -62,5 +62,6 @@
     <string name="menu_about_text">About</string>
     <string name="menu_help_text">Help</string>
     <string name="app_info_text">AI Sugar</string>
+    <string name="text_wl_810">810 nm</string>
 
 </resources>

@@ -8,9 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.util.Size
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Button
 import android.widget.Toast
 import androidx.annotation.NonNull
@@ -33,9 +31,12 @@ class cameraFragment : Fragment() {
     private var imageCapture: ImageCapture? = null
     private lateinit var outputDirectory: File
     private lateinit var cameraExecutor: ExecutorService
+    private lateinit var cameraPreviewView: PreviewView
 //    private lateinit var camera: Camera
     val width=640
     val height=480
+    val isoArray=intArrayOf(50,125,125,400,800,3200,3200)
+    val speedArray= longArrayOf(8000000L,6250000L,8000000L,25000000L,50000000L,33333333L,66666667L)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,16 +49,18 @@ class cameraFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+        setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_camera, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        cameraPreviewView=view.findViewById(R.id.cameraPreview)
         // Request camera permissions
         if (allPermissionsGranted()) {
-            val iso=800
-            val exposureTime=1/100*1e9
-            startCamera(view.findViewById(R.id.cameraPreview),iso,exposureTime.toLong())
+            val iso=50
+            val exposureTime=8000000L
+            startCamera(cameraPreviewView,iso,exposureTime)
         } else {
             ActivityCompat.requestPermissions(
                 requireActivity(), REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
@@ -68,10 +71,73 @@ class cameraFragment : Fragment() {
             takePhoto()
         }
 
+        view.findViewById<Button>(R.id.camera_680_button).setOnClickListener {
+            startCamera(cameraPreviewView,isoArray[0],speedArray[0])
+        }
+
+        view.findViewById<Button>(R.id.camera_700_button).setOnClickListener {
+            startCamera(cameraPreviewView,isoArray[1],speedArray[1])
+        }
+
+        view.findViewById<Button>(R.id.camera_720_button).setOnClickListener {
+            startCamera(cameraPreviewView,isoArray[2],speedArray[2])
+        }
+        view.findViewById<Button>(R.id.camera_760_button).setOnClickListener {
+            startCamera(cameraPreviewView,isoArray[3],speedArray[3])
+        }
+        view.findViewById<Button>(R.id.camera_780_button).setOnClickListener {
+            startCamera(cameraPreviewView,isoArray[4],speedArray[4])
+        }
+        view.findViewById<Button>(R.id.camera_800_button).setOnClickListener {
+            startCamera(cameraPreviewView,isoArray[5],speedArray[5])
+        }
+        view.findViewById<Button>(R.id.camera_810_button).setOnClickListener {
+            startCamera(cameraPreviewView,isoArray[6],speedArray[6])
+        }
 
         view.findViewById<Button>(R.id.camera_back_button).setOnClickListener{
             Navigation.findNavController(it)
                 .navigate(R.id.action_cameraFragment_to_sugarFragment)
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.menu_camera,menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_680 -> {
+                startCamera(cameraPreviewView,isoArray[0],speedArray[0])
+                true
+            }
+            R.id.menu_700 ->{
+                startCamera(cameraPreviewView,isoArray[1],speedArray[1])
+                true
+            }
+
+            R.id.menu_720 ->{
+                startCamera(cameraPreviewView,isoArray[2],speedArray[2])
+                true
+            }
+            R.id.menu_760 ->{
+                startCamera(cameraPreviewView,isoArray[3],speedArray[3])
+                true
+            }
+            R.id.menu_780 ->{
+                startCamera(cameraPreviewView,isoArray[4],speedArray[4])
+                true
+            }
+            R.id.menu_800 ->{
+                startCamera(cameraPreviewView,isoArray[5],speedArray[5])
+                true
+            }
+            R.id.menu_810 ->{
+                startCamera(cameraPreviewView,isoArray[6],speedArray[6])
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
@@ -90,10 +156,12 @@ class cameraFragment : Fragment() {
             val imageCaptureBuilder = ImageCapture.Builder()
 
             Camera2Interop.Extender(imageCaptureBuilder)
-                .setCaptureRequestOption(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_OFF)
+//                .setCaptureRequestOption(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_OFF)
                 .setCaptureRequestOption(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION, 0)
+                .setCaptureRequestOption(CaptureRequest.CONTROL_AWB_MODE, CameraMetadata.CONTROL_AWB_MODE_DAYLIGHT) // turn off auto white balance
+                .setCaptureRequestOption(CaptureRequest.CONTROL_AWB_LOCK, true)
+                .setCaptureRequestOption(CaptureRequest.CONTROL_AF_MODE,CameraMetadata.CONTROL_AF_TRIGGER_START)
                 .setCaptureRequestOption(CaptureRequest.CONTROL_AE_MODE, CameraMetadata.CONTROL_AE_MODE_OFF) // turn off auto-exposure
-                .setCaptureRequestOption(CaptureRequest.CONTROL_AWB_MODE, CameraMetadata.CONTROL_AWB_MODE_OFF) // turn off auto white balance
                 .setCaptureRequestOption(CaptureRequest.SENSOR_EXPOSURE_TIME, exposureTime)
                 .setCaptureRequestOption(CaptureRequest.SENSOR_SENSITIVITY,iso)
 
@@ -118,13 +186,11 @@ class cameraFragment : Fragment() {
             // A variable number of use-cases can be passed here -
             // camera provides access to CameraControl & CameraInfo
             cameraProvider.bindToLifecycle(
-                this, cameraSelector, preview, imageCapture,)
+                this, cameraSelector, preview, imageCapture,imageAnalysis)
 
         }, ContextCompat.getMainExecutor(requireContext()))
 
     }
-
-
 
     private fun takePhoto() {
         // Get a stable reference of the modifiable image capture use case

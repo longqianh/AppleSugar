@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_680"
+        android:title="@string/text_wl_680" />
+    <item
+        android:id="@+id/menu_700"
+        android:title="@string/text_wl_700" />
+
+    <item
+        android:id="@+id/menu_720"
+        android:title="@string/text_wl_720" />
+    <item
+        android:id="@+id/menu_760"
+        android:title="@string/text_wl_760" />
+
+    <item
+        android:id="@+id/menu_780"
+        android:title="@string/text_wl_780" />
+    <item
+        android:id="@+id/menu_800"
+        android:title="@string/text_wl_800" />
+
+    <item
+        android:id="@+id/menu_810"
+        android:title="@string/text_wl_810" />
+
+</menu>
