@@ -34,13 +34,12 @@ class cameraFragment : Fragment() {
     private lateinit var outputDirectory: File
     private lateinit var cameraExecutor: ExecutorService
 //    private lateinit var camera: Camera
-    var width=1280
-    var height=720
+    val width=640
+    val height=480
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         outputDirectory = MainActivity.getOutputDirectory(requireContext())
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
@@ -56,12 +55,14 @@ class cameraFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         // Request camera permissions
         if (allPermissionsGranted()) {
-            startCamera(view.findViewById(R.id.cameraPreview))
+            val iso=800
+            val exposureTime=1/100*1e9
+            startCamera(view.findViewById(R.id.cameraPreview),iso,exposureTime.toLong())
         } else {
             ActivityCompat.requestPermissions(
                 requireActivity(), REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
         }
-        startCamera(view.findViewById(R.id.cameraPreview))
+//        startCamera(view.findViewById(R.id.cameraPreview))
         view.findViewById<Button>(R.id.camera_capture_button).setOnClickListener {
 //            println("hello")
             takePhoto()
@@ -79,12 +80,12 @@ class cameraFragment : Fragment() {
         cameraExecutor.shutdown()
     }
 
-    private fun startCamera(cameraPreviewView:PreviewView) {
+    private fun startCamera(cameraPreviewView:PreviewView,iso:Int,exposureTime:Long) {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
-        cameraProviderFuture.addListener(Runnable {
+        cameraProviderFuture.addListener({
             // Used to bind the lifecycle of cameras to the lifecycle owner
-            val myTime=2040000L // nanoseconds -->1/490*1e9
-            val myISO=400
+//            val myTime=2040000L // nanoseconds -->1/490*1e9
+//            val myISO=400
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
             val imageCaptureBuilder = ImageCapture.Builder()
 
@@ -93,8 +94,8 @@ class cameraFragment : Fragment() {
                 .setCaptureRequestOption(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION, 0)
                 .setCaptureRequestOption(CaptureRequest.CONTROL_AE_MODE, CameraMetadata.CONTROL_AE_MODE_OFF) // turn off auto-exposure
                 .setCaptureRequestOption(CaptureRequest.CONTROL_AWB_MODE, CameraMetadata.CONTROL_AWB_MODE_OFF) // turn off auto white balance
-                .setCaptureRequestOption(CaptureRequest.SENSOR_EXPOSURE_TIME,myTime)
-                .setCaptureRequestOption(CaptureRequest.SENSOR_SENSITIVITY,myISO)
+                .setCaptureRequestOption(CaptureRequest.SENSOR_EXPOSURE_TIME, exposureTime)
+                .setCaptureRequestOption(CaptureRequest.SENSOR_SENSITIVITY,iso)
 
             imageCapture = imageCaptureBuilder.build()
 //            println(imageCaptureBuilder.get(CaptureRequest.SENSOR_SENSITIVITY))
@@ -105,9 +106,9 @@ class cameraFragment : Fragment() {
                     it.setSurfaceProvider(cameraPreviewView.surfaceProvider)
                 }
 //
-//            val imageAnalysis = ImageAnalysis.Builder()
-//                .setTargetResolution(Size(width, height))
-//                .build()
+            val imageAnalysis = ImageAnalysis.Builder()
+                .setTargetResolution(Size(width, height))
+                .build()
 
             // Select back camera as a default
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
@@ -117,11 +118,9 @@ class cameraFragment : Fragment() {
             // A variable number of use-cases can be passed here -
             // camera provides access to CameraControl & CameraInfo
             cameraProvider.bindToLifecycle(
-                this, cameraSelector, preview, imageCapture)
+                this, cameraSelector, preview, imageCapture,)
 
         }, ContextCompat.getMainExecutor(requireContext()))
-
-
 
     }
 

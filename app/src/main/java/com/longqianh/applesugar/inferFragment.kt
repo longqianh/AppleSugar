@@ -99,8 +99,8 @@ class inferFragment: Fragment(), View.OnClickListener {
         sugar_text = view.findViewById(R.id.sugar_text)
         show_sugar_text = view.findViewById(R.id.show_sugar_text)
         sugar_text.visibility = View.GONE
-        image_origin = view.findViewById(R.id.image_origin)
-        image_processed = view.findViewById(R.id.image_processed)
+//        image_origin = view.findViewById(R.id.image_origin)
+//        image_processed = view.findViewById(R.id.image_processed)
         am = requireContext().assets
 
 //        val testPath="680.jpg"
@@ -127,50 +127,43 @@ class inferFragment: Fragment(), View.OnClickListener {
 
             R.id.pick680_button -> {
                 val btn = v.findViewById<Button>(v.id)
-                btn.isSelected=!btn.isSelected
-                features.set(0, intensity / bk[0])
+                processButton(btn,0)
                 show_sugar_text.text = "${features[0]}"
             }
 
             R.id.pick700_button -> {
                 val btn = v.findViewById<Button>(v.id)
-                btn.isSelected=!btn.isSelected
-                features.set(1, intensity / bk[1])
+                processButton(btn,1)
                 show_sugar_text.text = "${features[1]}"
             }
 
             R.id.pick720_button -> {
                 val btn = v.findViewById<Button>(v.id)
-                btn.isSelected=!btn.isSelected
-                features.set(2, intensity / bk[2])
+                processButton(btn,2)
                 show_sugar_text.text = "${features[2]}"
             }
 
             R.id.pick760_button -> {
                 val btn = v.findViewById<Button>(v.id)
-                btn.isSelected=!btn.isSelected
-                features.set(3, intensity / bk[3])
+                processButton(btn,3)
                 show_sugar_text.text = "${features[3]}"
             }
 
             R.id.pick780_button -> {
                 val btn = v.findViewById<Button>(v.id)
-                btn.isSelected=!btn.isSelected
-                features.set(4, intensity / bk[4])
+                processButton(btn,4)
                 show_sugar_text.text = "${features[4]}"
             }
 
             R.id.pick800_button -> {
                 val btn = v.findViewById<Button>(v.id)
-                btn.isSelected=!btn.isSelected
-                features.set(5, intensity / bk[5])
+                processButton(btn,5)
                 show_sugar_text.text = "${features[5]}"
             }
 
             R.id.pick810_button -> {
                 val btn = v.findViewById<Button>(v.id)
-                btn.isSelected=!btn.isSelected
-                features.set(6, intensity / bk[6])
+                processButton(btn,6)
                 show_sugar_text.text = "${features[6]}"
             }
 
@@ -208,7 +201,17 @@ class inferFragment: Fragment(), View.OnClickListener {
         }
     }
 
-
+    private fun processButton(btn:Button,index:Int)
+    {
+        btn.isSelected=!btn.isSelected
+        if(btn.isSelected)
+        {
+            features.set(index, intensity / bk[index])
+        }
+        else{
+            features.set(index, 0.0)
+        }
+    }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
@@ -278,7 +281,7 @@ class inferFragment: Fragment(), View.OnClickListener {
         mat.toGray(bitmap)
         val sz: Size = Size(640.0, 480.0)
         resize(mat, mat, sz)
-        image_origin.setImageBitmap(mat.toBitmap())
+//        image_origin.setImageBitmap(mat.toBitmap())
         val binary = Mat()
         threshold(mat, mat, 200.0, 255.0, THRESH_TOZERO_INV)
         threshold(mat, binary, 0.0, 255.0, THRESH_OTSU)
@@ -316,7 +319,7 @@ class inferFragment: Fragment(), View.OnClickListener {
         val mask = Mat()
         threshold(mat, mask, thres, 255.0, THRESH_BINARY)
         mat.mul(mask)
-        image_processed.setImageBitmap(mat.toBitmap())
+//        image_processed.setImageBitmap(mat.toBitmap())
         val mean_val = MatOfDouble()
         val std_val = MatOfDouble()
         meanStdDev(mat, mean_val, std_val, mask)
