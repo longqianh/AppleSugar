@@ -6,8 +6,6 @@ import android.content.res.AssetFileDescriptor
 import android.content.res.AssetManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Color
-import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -17,63 +15,52 @@ import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
+import com.longqianh.applesugar.databinding.InferFragmentBinding
 import com.longqianh.applesugar.extensions.toBitmap
 import com.longqianh.applesugar.extensions.toGray
-import kotlinx.coroutines.delay
 import org.opencv.core.*
 import org.opencv.core.Core.*
 import org.opencv.imgproc.Imgproc
 import org.opencv.imgproc.Imgproc.*
 import org.tensorflow.lite.Interpreter
-import org.w3c.dom.Text
-import java.io.File
 import java.io.FileInputStream
-import java.io.IOException
 import java.io.InputStream
 import java.nio.MappedByteBuffer
 import java.nio.channels.FileChannel
 import kotlin.math.sqrt
 
+
 class inferFragment: Fragment(), View.OnClickListener {
 
-    companion object {
-        fun newInstance() = inferFragment()
-    }
+    private var _binding: InferFragmentBinding? = null
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _binding!!
+
+    private lateinit var viewModel: InferViewModel
 
     private lateinit var getContent: ActivityResultLauncher<String>
     private var intensity: Double = 0.0
-    private var features = DoubleArray(7) { _ -> 0.0 }
-    private lateinit var viewModel: InferViewModel
-    private lateinit var image_origin: ImageView
-    private lateinit var image_processed: ImageView
     private lateinit var contentResolver: ContentResolver
     private lateinit var am: AssetManager
-    private lateinit var sugar_text: TextView
-    private lateinit var show_sugar_text: TextView
-//    private var buttonPressed= BooleanArray(7){_->false}
-    private var bk = doubleArrayOf(
-        76.50252212,
-        81.3847853,
-        61.46050539,
-        58.0978088,
-        59.74946987,
-        59.76914235,
-        61.46982301
-    )
 
-    private var is_reg=false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         setHasOptionsMenu(true)
+        Log.i("inferFragment","onCreateView")
+        viewModel= ViewModelProviders.of(this).get(InferViewModel::class.java)
+        _binding = InferFragmentBinding.inflate(inflater, container, false)
+        val view = binding.root
+        return view
 
-        return inflater.inflate(R.layout.infer_fragment, container, false)
+//        return inflater.inflate(R.layout.infer_fragment, container, false)
     }
 
     @SuppressLint("UseSwitchCompatOrMaterialCode")
@@ -84,41 +71,31 @@ class inferFragment: Fragment(), View.OnClickListener {
         getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri ->
             intensity = getIntensity(uri)
         }
-        val back_button: Button = view.findViewById(R.id.infer_back_button)
 
-        val button_680: Button = view.findViewById(R.id.pick680_button)
-        val button_700: Button = view.findViewById(R.id.pick700_button)
-        val button_720: Button = view.findViewById(R.id.pick720_button)
-        val button_760: Button = view.findViewById(R.id.pick760_button)
-        val button_780: Button = view.findViewById(R.id.pick780_button)
-        val button_800: Button = view.findViewById(R.id.pick800_button)
-        val button_810: Button = view.findViewById(R.id.pick810_button)
+
         val button_fresh: Button = view.findViewById(R.id.pick_button)
         val get_sugar_button: Button = view.findViewById(R.id.get_sugar_button)
         val model_switch: Switch = view.findViewById(R.id.model_switch)
-        sugar_text = view.findViewById(R.id.sugar_text)
-        show_sugar_text = view.findViewById(R.id.show_sugar_text)
-        sugar_text.visibility = View.GONE
-//        image_origin = view.findViewById(R.id.image_origin)
-//        image_processed = view.findViewById(R.id.image_processed)
+        val bk_switch: Switch = view.findViewById(R.id.bk_switch)
+
+        binding.sugarText.visibility = View.GONE
         am = requireContext().assets
 
-//        val testPath="680.jpg"
-//        val testIntensity=testIntensity(testPath)
-//        Toast.makeText(requireContext(),"Test: $testIntensity",Toast.LENGTH_LONG).show()
-
-        back_button.setOnClickListener(this)
-        button_680.setOnClickListener(this) // click 后会调用 onClick
-        button_700.setOnClickListener(this)
-        button_720.setOnClickListener(this)
-        button_760.setOnClickListener(this)
-        button_780.setOnClickListener(this)
-        button_800.setOnClickListener(this)
-        button_810.setOnClickListener(this)
+        binding.pick680Button.setOnClickListener(this) // click 后会调用 onClick
+        binding.pick700Button.setOnClickListener(this)
+        binding.pick720Button.setOnClickListener(this)
+        binding.pick760Button.setOnClickListener(this)
+        binding.pick780Button.setOnClickListener(this)
+        binding.pick800Button.setOnClickListener(this)
+        binding.pick830Button.setOnClickListener(this)
+        binding.pick850Button.setOnClickListener(this)
+        binding.captureButton.setOnClickListener(this)
         button_fresh.setOnClickListener(this)
         get_sugar_button.setOnClickListener(this)
         model_switch.setOnClickListener(this)
+        bk_switch.setOnClickListener(this)
     }
+
 
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onClick(v: View?) {
@@ -126,71 +103,60 @@ class inferFragment: Fragment(), View.OnClickListener {
         when (v!!.id) {
 
             R.id.pick680_button -> {
-                val btn = v.findViewById<Button>(v.id)
-                processButton(btn,0)
-                show_sugar_text.text = "${features[0]}"
+                processButton(binding.pick680Button,0,binding.bkSwitch)
             }
 
             R.id.pick700_button -> {
-                val btn = v.findViewById<Button>(v.id)
-                processButton(btn,1)
-                show_sugar_text.text = "${features[1]}"
+                processButton(binding.pick700Button,1,binding.bkSwitch)
             }
 
             R.id.pick720_button -> {
-                val btn = v.findViewById<Button>(v.id)
-                processButton(btn,2)
-                show_sugar_text.text = "${features[2]}"
+                processButton(binding.pick720Button,2,binding.bkSwitch)
             }
 
             R.id.pick760_button -> {
-                val btn = v.findViewById<Button>(v.id)
-                processButton(btn,3)
-                show_sugar_text.text = "${features[3]}"
+                processButton(binding.pick760Button,3,binding.bkSwitch)
             }
 
             R.id.pick780_button -> {
-                val btn = v.findViewById<Button>(v.id)
-                processButton(btn,4)
-                show_sugar_text.text = "${features[4]}"
+                processButton(binding.pick780Button,4,binding.bkSwitch)
             }
 
             R.id.pick800_button -> {
-                val btn = v.findViewById<Button>(v.id)
-                processButton(btn,5)
-                show_sugar_text.text = "${features[5]}"
+                processButton(binding.pick800Button,5,binding.bkSwitch)
             }
 
-            R.id.pick810_button -> {
-                val btn = v.findViewById<Button>(v.id)
-                processButton(btn,6)
-                show_sugar_text.text = "${features[6]}"
+            R.id.pick830_button -> {
+                processButton(binding.pick830Button,6,binding.bkSwitch)
             }
+
+
 
             R.id.get_sugar_button -> {
                 Toast.makeText(
                     requireContext(),
-                    "input features: [${features[0]},${features[1]}," +
-                            "${features[2]},${features[3]},${features[4]},${features[5]},${features[6]}]",
+                    "input features: [${viewModel.features[0]},${viewModel.features[1]}," +
+                            "${viewModel.features[2]},${viewModel.features[3]}," +
+                            "${viewModel.features[4]},${viewModel.features[5]}," +
+                            "${viewModel.features[6]}]",
                     Toast.LENGTH_LONG
                 ).show()
-                val sugar = calSugar(features)
-                sugar_text.visibility = View.VISIBLE
-                sugar_text.setText("Apple sugar: $sugar Brix")
+                val sugar = calSugar(viewModel.features)
+                binding.sugarText.visibility = View.VISIBLE
+                binding.sugarText.setText("Apple sugar: $sugar Brix")
 
             }
 
-            R.id.infer_back_button -> {
-//                resetButton(v)
-                Navigation.findNavController(v).navigateUp()
+            R.id.capture_button -> {
+                Navigation.findNavController(v).navigate(R.id.action_inferFragment_to_cameraFragment)
             }
+
             R.id.pick_button -> {
                 getContent.launch("image/*")
             }
 
             R.id.model_switch -> {
-                is_reg=!is_reg
-                if(is_reg==true)
+                if(binding.modelSwitch.isChecked==true)
                 {
                     Toast.makeText(requireContext(),"Change to Regresion Model.",Toast.LENGTH_SHORT).show()
                 }
@@ -198,18 +164,75 @@ class inferFragment: Fragment(), View.OnClickListener {
                     Toast.makeText(requireContext(),"Change to Classification Model.",Toast.LENGTH_SHORT).show()
                 }
             }
+
+            R.id.bk_switch ->{
+                if(binding.bkSwitch.isChecked)
+                {
+                    binding.pick680Button.isSelected=viewModel.inferButtonSelect[0]
+                    binding.pick700Button.isSelected=viewModel.inferButtonSelect[1]
+                    binding.pick720Button.isSelected=viewModel.inferButtonSelect[2]
+                    binding.pick760Button.isSelected=viewModel.inferButtonSelect[3]
+                    binding.pick780Button.isSelected=viewModel.inferButtonSelect[4]
+                    binding.pick800Button.isSelected=viewModel.inferButtonSelect[5]
+                    binding.pick830Button.isSelected=viewModel.inferButtonSelect[6]
+
+                }
+                else{
+                    binding.pick680Button.isSelected=viewModel.bkButtonSelect[0]
+                    binding.pick700Button.isSelected=viewModel.bkButtonSelect[1]
+                    binding.pick720Button.isSelected=viewModel.bkButtonSelect[2]
+                    binding.pick760Button.isSelected=viewModel.bkButtonSelect[3]
+                    binding.pick780Button.isSelected=viewModel.bkButtonSelect[4]
+                    binding.pick800Button.isSelected=viewModel.bkButtonSelect[5]
+                    binding.pick830Button.isSelected=viewModel.bkButtonSelect[6]
+                }
+            }
         }
     }
 
-    private fun processButton(btn:Button,index:Int)
+
+
+
+    private fun processButton(btn:Button,index:Int,sw:Switch)
     {
         btn.isSelected=!btn.isSelected
-        if(btn.isSelected)
+        if(sw.isChecked==true)
         {
-            features.set(index, intensity / bk[index])
+            viewModel.inferButtonSelect[index]=!viewModel.inferButtonSelect[index]
+            binding.showSugarText.text = "Feature-$index: ${viewModel.features[index]}"
         }
         else{
-            features.set(index, 0.0)
+            viewModel.bkButtonSelect[index]=!viewModel.bkButtonSelect[index]
+            binding.showSugarText.text = "Background-$index: ${viewModel.bk[index]}"
+        }
+        if(btn.isSelected)
+        {
+            if(sw.isChecked==false)
+            {
+                viewModel.bk.set(index, intensity)
+            }
+            else
+            {
+                if(viewModel.bk[index]==0.0)
+                {
+                    Toast.makeText(requireContext(),"Please set background intensity first.",Toast.LENGTH_SHORT).show()
+                }
+                else{
+                    viewModel.features.set(index, intensity / viewModel.bk[index])
+                }
+            }
+        }
+        else{
+            if(sw.isChecked==false)
+            {
+                viewModel.bk.set(index, 0.0)
+                Toast.makeText(requireContext(),"Set background intensity to 0.",Toast.LENGTH_SHORT).show()
+            }
+            else
+            {
+                viewModel.features.set(index, 0.0)
+                Toast.makeText(requireContext(),"Set feature intensity to 0.",Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -246,7 +269,7 @@ class inferFragment: Fragment(), View.OnClickListener {
     private fun calSugar(sequence: DoubleArray): Float {
 
         val inputs: Array<FloatArray> = arrayOf(sequence.map { it.toFloat() }.toFloatArray())
-        if(is_reg==true)
+        if(binding.modelSwitch.isChecked==true)
         {
             val modelPath="model_reg6.tflite"
             val interpreter = Interpreter(loadModelFile(modelPath)!!)
@@ -339,7 +362,7 @@ class inferFragment: Fragment(), View.OnClickListener {
     private fun testIntensity(path: String): Double {
         val istm: InputStream = am.open(path)
         val bitmap = BitmapFactory.decodeStream(istm)
-        image_origin.setImageBitmap(bitmap)
+//        image_origin.setImageBitmap(bitmap)
         val mat = Mat()
         mat.toGray(bitmap)
 //        val resizeimage:Mat = Mat()
@@ -384,7 +407,7 @@ class inferFragment: Fragment(), View.OnClickListener {
         val mask = Mat()
         threshold(mat, mask, thres, 255.0, THRESH_BINARY)
         mat.mul(mask)
-        image_processed.setImageBitmap(mat.toBitmap())
+//        image_processed.setImageBitmap(mat.toBitmap())
         val mean_val = MatOfDouble()
         val std_val = MatOfDouble()
         meanStdDev(mat, mean_val, std_val, mask)
@@ -414,7 +437,7 @@ class inferFragment: Fragment(), View.OnClickListener {
         Log.d("drawContour", "${contours.get(0).size()}")
         drawContours(mat, contours, -1, color)
         val procbitmap = mat.toBitmap()
-        image_origin.setImageBitmap(procbitmap)
+//        image_origin.setImageBitmap(procbitmap)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

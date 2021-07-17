@@ -63,5 +63,9 @@
     <string name="menu_help_text">Help</string>
     <string name="app_info_text">AI Sugar</string>
     <string name="text_wl_810">810 nm</string>
+    <string name="bk_switch_text">bk | infer</string>
+    <string name="button_830_text">830 nm</string>
+    <string name="button_850_text">850 nm</string>
+    <string name="capture_text">Capture</string>
 
 </resources>

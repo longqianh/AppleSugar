@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/sugarFragment">
+    app:startDestination="@id/inferFragment">
 
     <fragment
         android:id="@+id/inferFragment"
@@ -16,23 +16,8 @@
         <action
             android:id="@+id/action_inferFragment_to_helpFragment"
             app:destination="@id/helpFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/sugarFragment"
-        android:name="com.longqianh.applesugar.sugarFragment"
-        android:label="fragment_sugar"
-        tools:layout="@layout/fragment_sugar" >
         <action
-            android:id="@+id/action_sugarFragment_to_inferFragment"
-            app:destination="@id/inferFragment" />
-        <action
-            android:id="@+id/action_sugarFragment_to_helpFragment"
-            app:destination="@id/helpFragment" />
-        <action
-            android:id="@+id/action_sugarFragment_to_aboutFragment"
-            app:destination="@id/aboutFragment" />
-        <action
-            android:id="@+id/action_sugarFragment_to_cameraFragment"
+            android:id="@+id/action_inferFragment_to_cameraFragment"
             app:destination="@id/cameraFragment" />
     </fragment>
     <fragment
@@ -49,9 +34,5 @@
         android:id="@+id/cameraFragment"
         android:name="com.longqianh.applesugar.cameraFragment"
         android:label="fragment_camera"
-        tools:layout="@layout/fragment_camera" >
-        <action
-            android:id="@+id/action_cameraFragment_to_sugarFragment"
-            app:destination="@id/sugarFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_camera" />
 </navigation>

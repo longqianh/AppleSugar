@@ -1,6 +1,7 @@
 package com.longqianh.applesugar
 
 import android.content.pm.PackageManager
+import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraDevice
 import android.hardware.camera2.CameraMetadata
 import android.hardware.camera2.CaptureRequest
@@ -20,6 +21,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
+import com.longqianh.applesugar.databinding.InferFragmentBinding
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -96,8 +98,8 @@ class cameraFragment : Fragment() {
         }
 
         view.findViewById<Button>(R.id.camera_back_button).setOnClickListener{
-            Navigation.findNavController(it)
-                .navigate(R.id.action_cameraFragment_to_sugarFragment)
+            Navigation.findNavController(it).navigateUp()
+//                .navigate(R.id.action_cameraFragment_to_inferFragment)
         }
     }
 
@@ -154,13 +156,14 @@ class cameraFragment : Fragment() {
 //            val myISO=400
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
             val imageCaptureBuilder = ImageCapture.Builder()
-
             Camera2Interop.Extender(imageCaptureBuilder)
 //                .setCaptureRequestOption(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_OFF)
+                .setCaptureRequestOption(CaptureRequest.CONTROL_AF_TRIGGER,CameraMetadata.CONTROL_AF_TRIGGER_CANCEL)
+                .setCaptureRequestOption(CaptureRequest.CONTROL_AF_MODE,CameraMetadata.CONTROL_AF_MODE_OFF)
+                .setCaptureRequestOption(CaptureRequest.LENS_FOCAL_LENGTH, 25.0F) // mm
                 .setCaptureRequestOption(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION, 0)
                 .setCaptureRequestOption(CaptureRequest.CONTROL_AWB_MODE, CameraMetadata.CONTROL_AWB_MODE_DAYLIGHT) // turn off auto white balance
                 .setCaptureRequestOption(CaptureRequest.CONTROL_AWB_LOCK, true)
-                .setCaptureRequestOption(CaptureRequest.CONTROL_AF_MODE,CameraMetadata.CONTROL_AF_TRIGGER_START)
                 .setCaptureRequestOption(CaptureRequest.CONTROL_AE_MODE, CameraMetadata.CONTROL_AE_MODE_OFF) // turn off auto-exposure
                 .setCaptureRequestOption(CaptureRequest.SENSOR_EXPOSURE_TIME, exposureTime)
                 .setCaptureRequestOption(CaptureRequest.SENSOR_SENSITIVITY,iso)
