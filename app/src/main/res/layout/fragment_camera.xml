@@ -12,9 +12,8 @@
         android:id="@+id/camera_back_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="left|top"
+        android:layout_gravity="start|top"
         android:text="@string/back_button_text" />
-
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -107,16 +106,16 @@
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:text="@string/button_800_text"
-            app:layout_constraintBottom_toTopOf="@+id/camera_810_button"
+            app:layout_constraintBottom_toTopOf="@+id/camera_830_button"
             app:layout_constraintEnd_toEndOf="parent" />
 
         <Button
-            android:id="@+id/camera_810_button"
+            android:id="@+id/camera_830_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
-            android:text="@string/button_810_text"
+            android:text="@string/button_830_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 

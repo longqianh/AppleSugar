@@ -8,4 +8,8 @@
         android:id="@+id/menu_help"
         android:title="@string/menu_help_text" />
 
+    <item
+        android:id="@+id/menu_bluetooth"
+        android:title="@string/menu_bluetooth_text" />
+
 </menu>

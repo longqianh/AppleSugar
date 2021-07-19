@@ -17,6 +17,7 @@ import java.util.concurrent.ExecutorService
 
 class MainActivity : AppCompatActivity() {
 
+//    var m_address: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +29,8 @@ class MainActivity : AppCompatActivity() {
         else{
             Log.d("main","opencv not loaded")
         }
+
+
 //        val sugarFrag=sugarFragment()
 //        supportFragmentManager.beginTransaction().add(R.id.fragment_container,sugarFrag).commit()
     }

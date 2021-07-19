@@ -68,14 +68,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal|center_vertical"
-                android:layout_marginTop="@dimen/button_to_top"
-                android:layout_marginEnd="24dp"
+                android:layout_marginEnd="20dp"
                 android:backgroundTint="@color/button_background_color"
                 android:text="@string/button_680_text"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/pick700_button"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.371" />
+                app:layout_constraintTop_toTopOf="@+id/pick700_button" />
 
             <Button
                 android:id="@+id/pick780_button"
@@ -93,25 +90,20 @@
                 android:id="@+id/pick760_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="24dp"
                 android:backgroundTint="@color/button_background_color"
                 android:text="@string/button_760_text"
-                app:layout_constraintEnd_toStartOf="@+id/pick780_button"
-                app:layout_constraintTop_toBottomOf="@+id/pick680_button" />
+                app:layout_constraintStart_toStartOf="@+id/pick680_button"
+                app:layout_constraintTop_toTopOf="@+id/pick780_button" />
 
             <Button
                 android:id="@+id/pick720_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
-                android:layout_marginTop="@dimen/button_to_top"
                 android:backgroundTint="@color/button_background_color"
                 android:text="@string/button_720_text"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/pick700_button"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.371" />
+                app:layout_constraintTop_toTopOf="@+id/pick700_button" />
 
 
             <Button
@@ -130,23 +122,21 @@
                 android:id="@+id/pick800_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="24dp"
                 android:backgroundTint="@color/button_background_color"
                 android:text="@string/button_800_text"
-                app:layout_constraintStart_toEndOf="@+id/pick780_button"
-                app:layout_constraintTop_toBottomOf="@+id/pick720_button" />
+                app:layout_constraintEnd_toEndOf="@+id/pick720_button"
+                app:layout_constraintTop_toTopOf="@+id/pick780_button" />
 
             <Button
                 android:id="@+id/pick830_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
                 android:layout_marginEnd="24dp"
                 android:backgroundTint="@color/button_background_color"
                 android:text="@string/button_830_text"
                 app:layout_constraintEnd_toStartOf="@+id/pick850_button"
-                app:layout_constraintTop_toBottomOf="@+id/pick760_button" />
+                app:layout_constraintStart_toStartOf="@+id/pick760_button"
+                app:layout_constraintTop_toTopOf="@+id/pick850_button" />
 
             <Button
                 android:id="@+id/get_sugar_button"
@@ -218,8 +208,8 @@
                 android:id="@+id/pick_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:text="Pick"
+                android:layout_marginBottom="32dp"
+                android:text="@string/pick_picture_text"
                 android:textAlignment="center"
                 android:textStyle="bold|italic"
                 app:layout_constraintBottom_toTopOf="@+id/show_sugar_text"
@@ -232,7 +222,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="8dp"
-                android:text="Cla|Reg"
+                android:text="@string/model_switch_text"
                 android:textSize="16sp"
                 app:layout_constraintEnd_toStartOf="@+id/get_sugar_button"
                 app:layout_constraintTop_toBottomOf="@+id/pick830_button" />
@@ -247,6 +237,15 @@
                 app:layout_constraintBottom_toTopOf="@+id/show_sugar_text"
                 app:layout_constraintStart_toStartOf="parent" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <Switch
+                android:id="@+id/light_control_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="@string/light_control_text"
+                app:layout_constraintBottom_toTopOf="@+id/bk_switch"
+                app:layout_constraintEnd_toEndOf="@+id/bk_switch" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

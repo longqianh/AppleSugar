@@ -63,9 +63,18 @@
     <string name="menu_help_text">Help</string>
     <string name="app_info_text">AI Sugar</string>
     <string name="text_wl_810">810 nm</string>
-    <string name="bk_switch_text">bk | infer</string>
     <string name="button_830_text">830 nm</string>
     <string name="button_850_text">850 nm</string>
     <string name="capture_text">Capture</string>
+    <string name="text_wl_830">830 nm</string>
+    <string name="not_connected">Bluetooth not connected.</string>
+    <string name="refresh">Refresh</string>
+    <string name="menu_bluetooth_text">Bluetooth</string>
+    <string name="select_bluetooth_device">Bluetooth Devices</string>
+    <string name="pick_picture_text">Pick</string>
+    <string name="light_control_text">Light Control</string>
+    <string name="model_switch_text">Cla|Reg</string>
+    <string name="bk_switch_text">Bk|Infer</string>
+
 
 </resources>

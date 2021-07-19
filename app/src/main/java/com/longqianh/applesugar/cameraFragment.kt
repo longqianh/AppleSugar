@@ -2,7 +2,6 @@ package com.longqianh.applesugar
 
 import android.content.pm.PackageManager
 import android.hardware.camera2.CameraCharacteristics
-import android.hardware.camera2.CameraDevice
 import android.hardware.camera2.CameraMetadata
 import android.hardware.camera2.CaptureRequest
 import android.net.Uri
@@ -12,7 +11,6 @@ import android.util.Size
 import android.view.*
 import android.widget.Button
 import android.widget.Toast
-import androidx.annotation.NonNull
 import androidx.camera.camera2.interop.Camera2Interop
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -21,7 +19,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
-import com.longqianh.applesugar.databinding.InferFragmentBinding
+import com.google.common.util.concurrent.ListenableFuture
+import com.longqianh.applesugar.view.CameraXPreviewViewTouchListener
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -34,12 +33,13 @@ class cameraFragment : Fragment() {
     private lateinit var outputDirectory: File
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var cameraPreviewView: PreviewView
-//    private lateinit var camera: Camera
-    val width=640
-    val height=480
+    private var mCameraControl: CameraControl? = null
+    private var mCameraInfo: CameraInfo? = null
+    //    private lateinit var camera: Camera
+//    val width=640
+//    val height=480
     val isoArray=intArrayOf(50,125,125,400,800,3200,3200)
     val speedArray= longArrayOf(8000000L,6250000L,8000000L,25000000L,50000000L,33333333L,66666667L)
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,6 +67,7 @@ class cameraFragment : Fragment() {
             ActivityCompat.requestPermissions(
                 requireActivity(), REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
         }
+
 //        startCamera(view.findViewById(R.id.cameraPreview))
         view.findViewById<Button>(R.id.camera_capture_button).setOnClickListener {
 //            println("hello")
@@ -93,7 +94,7 @@ class cameraFragment : Fragment() {
         view.findViewById<Button>(R.id.camera_800_button).setOnClickListener {
             startCamera(cameraPreviewView,isoArray[5],speedArray[5])
         }
-        view.findViewById<Button>(R.id.camera_810_button).setOnClickListener {
+        view.findViewById<Button>(R.id.camera_830_button).setOnClickListener {
             startCamera(cameraPreviewView,isoArray[6],speedArray[6])
         }
 
@@ -135,7 +136,7 @@ class cameraFragment : Fragment() {
                 startCamera(cameraPreviewView,isoArray[5],speedArray[5])
                 true
             }
-            R.id.menu_810 ->{
+            R.id.menu_830 ->{
                 startCamera(cameraPreviewView,isoArray[6],speedArray[6])
                 true
             }
@@ -158,9 +159,9 @@ class cameraFragment : Fragment() {
             val imageCaptureBuilder = ImageCapture.Builder()
             Camera2Interop.Extender(imageCaptureBuilder)
 //                .setCaptureRequestOption(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_OFF)
-                .setCaptureRequestOption(CaptureRequest.CONTROL_AF_TRIGGER,CameraMetadata.CONTROL_AF_TRIGGER_CANCEL)
-                .setCaptureRequestOption(CaptureRequest.CONTROL_AF_MODE,CameraMetadata.CONTROL_AF_MODE_OFF)
-                .setCaptureRequestOption(CaptureRequest.LENS_FOCAL_LENGTH, 25.0F) // mm
+//                .setCaptureRequestOption(CaptureRequest.CONTROL_AF_MODE,CameraMetadata.CONTROL_AF_MODE_OFF)
+//                .setCaptureRequestOption(CaptureRequest.CONTROL_AF_TRIGGER,CameraMetadata.CONTROL_AF_TRIGGER_START)
+                .setCaptureRequestOption(CaptureRequest.LENS_FOCAL_LENGTH, 5000.0F) // mm
                 .setCaptureRequestOption(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION, 0)
                 .setCaptureRequestOption(CaptureRequest.CONTROL_AWB_MODE, CameraMetadata.CONTROL_AWB_MODE_DAYLIGHT) // turn off auto white balance
                 .setCaptureRequestOption(CaptureRequest.CONTROL_AWB_LOCK, true)
@@ -178,7 +179,7 @@ class cameraFragment : Fragment() {
                 }
 //
             val imageAnalysis = ImageAnalysis.Builder()
-                .setTargetResolution(Size(width, height))
+                .setTargetResolution(Size(640, 480))
                 .build()
 
             // Select back camera as a default
@@ -188,10 +189,72 @@ class cameraFragment : Fragment() {
             cameraProvider.unbindAll()
             // A variable number of use-cases can be passed here -
             // camera provides access to CameraControl & CameraInfo
-            cameraProvider.bindToLifecycle(
+            val camera=cameraProvider.bindToLifecycle(
                 this, cameraSelector, preview, imageCapture,imageAnalysis)
 
+            // 相机控制，如点击
+            mCameraControl = camera.cameraControl
+            mCameraInfo = camera.cameraInfo
+            initCameraListener()
+
         }, ContextCompat.getMainExecutor(requireContext()))
+
+
+    }
+
+    // 相机点击等相关操作监听
+    private fun initCameraListener() {
+        val cameraXPreviewViewTouchListener = CameraXPreviewViewTouchListener(requireContext())
+//        val zoomState: LiveData<ZoomState> = mCameraInfo!!.zoomState
+        cameraXPreviewViewTouchListener.setCustomTouchListener(object :
+            CameraXPreviewViewTouchListener.CustomTouchListener {
+//
+//            override fun zoom(delta: Float) {
+//
+//                Log.d(TAG, "缩放")
+//                zoomState.value?.let {
+//                    val currentZoomRatio = it.zoomRatio
+//                    mCameraControl!!.setZoomRatio(currentZoomRatio * delta)
+//                }
+//            }
+
+
+            // 点击操作
+            override fun click(x: Float, y: Float) {
+//                println("clicked")
+                val factory = cameraPreviewView.meteringPointFactory
+                // 设置对焦位置
+                val point = factory.createPoint(x, y)
+                val action = FocusMeteringAction.Builder(point, FocusMeteringAction.FLAG_AF)
+                    // 3秒内自动调用取消对焦
+//                    .setAutoCancelDuration(5, TimeUnit.SECONDS)
+                    .build()
+                // 执行对焦
+                mCameraControl!!.startFocusAndMetering(action)
+//
+            }
+
+//            // 双击操作
+//            override fun doubleClick(x: Float, y: Float) {
+//                Log.d(TAG, "双击")
+//                // 双击放大缩小
+//                val currentZoomRatio = zoomState.value!!.zoomRatio
+//                if (currentZoomRatio > zoomState.value!!.minZoomRatio) {
+//                    mCameraControl!!.setLinearZoom(0f)
+//                } else {
+//                    mCameraControl!!.setLinearZoom(0.5f)
+//                }
+//            }
+//
+//            override fun longPress(x: Float, y: Float) {
+//                Log.d(TAG, "长按")
+//            }
+
+        })
+
+
+        // 添加监听事件
+        cameraPreviewView.setOnTouchListener(cameraXPreviewViewTouchListener)
 
     }
 
@@ -230,7 +293,7 @@ class cameraFragment : Fragment() {
             requireContext(), it) == PackageManager.PERMISSION_GRANTED
     }
     companion object {
-        private const val TAG = "CameraXBasic"
+        private const val TAG = "CameraX"
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
         private const val PHOTO_EXTENSION = ".jpg"
         private const val REQUEST_CODE_PERMISSIONS = 10
@@ -241,3 +304,5 @@ class cameraFragment : Fragment() {
     }
 
 }
+
+// todo: manual tape to focus

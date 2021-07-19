@@ -23,6 +23,6 @@ class InferViewModel : ViewModel() {
 
     var inferButtonSelect= BooleanArray(7){_->false}
     var bkButtonSelect= BooleanArray(7){_->false}
-
+    var lightControlSelect = BooleanArray(7){_->false}
 
 }
