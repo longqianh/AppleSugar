@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import com.google.common.util.concurrent.ListenableFuture
+import com.longqianh.applesugar.databinding.InferFragmentBinding
 import com.longqianh.applesugar.view.CameraXPreviewViewTouchListener
 import java.io.File
 import java.text.SimpleDateFormat
@@ -35,9 +36,7 @@ class cameraFragment : Fragment() {
     private lateinit var cameraPreviewView: PreviewView
     private var mCameraControl: CameraControl? = null
     private var mCameraInfo: CameraInfo? = null
-    //    private lateinit var camera: Camera
-//    val width=640
-//    val height=480
+
     val isoArray=intArrayOf(50,125,125,400,800,3200,3200)
     val speedArray= longArrayOf(8000000L,6250000L,8000000L,25000000L,50000000L,33333333L,66666667L)
 
@@ -159,9 +158,9 @@ class cameraFragment : Fragment() {
             val imageCaptureBuilder = ImageCapture.Builder()
             Camera2Interop.Extender(imageCaptureBuilder)
 //                .setCaptureRequestOption(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_OFF)
-//                .setCaptureRequestOption(CaptureRequest.CONTROL_AF_MODE,CameraMetadata.CONTROL_AF_MODE_OFF)
-//                .setCaptureRequestOption(CaptureRequest.CONTROL_AF_TRIGGER,CameraMetadata.CONTROL_AF_TRIGGER_START)
-                .setCaptureRequestOption(CaptureRequest.LENS_FOCAL_LENGTH, 5000.0F) // mm
+                .setCaptureRequestOption(CaptureRequest.CONTROL_AF_MODE,CameraMetadata.CONTROL_AF_MODE_OFF)
+                .setCaptureRequestOption(CaptureRequest.CONTROL_AF_TRIGGER, CameraMetadata.CONTROL_AF_TRIGGER_START)
+                .setCaptureRequestOption(CaptureRequest.LENS_FOCAL_LENGTH, 25.0F) // mm
                 .setCaptureRequestOption(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION, 0)
                 .setCaptureRequestOption(CaptureRequest.CONTROL_AWB_MODE, CameraMetadata.CONTROL_AWB_MODE_DAYLIGHT) // turn off auto white balance
                 .setCaptureRequestOption(CaptureRequest.CONTROL_AWB_LOCK, true)

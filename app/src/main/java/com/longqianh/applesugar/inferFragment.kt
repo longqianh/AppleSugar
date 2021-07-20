@@ -137,35 +137,6 @@ class inferFragment: Fragment(), View.OnClickListener {
     }
 
 
-//    private fun startBlueTooth() {
-//
-//        else if (mBluetoothService == null) {
-//            setupChat();
-//        }
-//
-//
-//    }
-//
-//    private fun sendMessage(message:String ) {
-//        // Check that we're actually connected before trying anything
-//        if (mBluetoothService.getState() != BluetoothChatService.STATE_CONNECTED) {
-//            Toast.makeText(activity, R.string.not_connected, Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-//
-//        // Check that there's actually something to send
-//        if (message.length() > 0) {
-//            // Get the message bytes and tell the BluetoothChatService to write
-//            byte[] send = message . getBytes ();
-//            mChatService.write(send);
-//
-//            // Reset out string buffer to zero and clear the edit text field
-//            mOutStringBuffer.setLength(0);
-//            mOutEditText.setText(mOutStringBuffer);
-//        }
-//
-//    }
-
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onClick(v: View?) {
 
@@ -292,7 +263,7 @@ class inferFragment: Fragment(), View.OnClickListener {
             }
         }
 
-//   todo:     pick intent result check
+//   todo:   pick intent result check
     }
 
     private fun changeButtonState(stateType:Int)
@@ -377,7 +348,13 @@ class inferFragment: Fragment(), View.OnClickListener {
 
         else{
             viewModel.lightControlSelect[index]=btn.isSelected
-            btControl.sendCommand(index.toString())
+            if (btn.isSelected)
+            {
+                btControl.sendCommand(index.toString())
+            }
+            else{
+                btControl.sendCommand("f")
+            }
 //            sendMessage(index) // turn on index and turn off others
             Toast.makeText(requireContext(),"Set $index light on.",Toast.LENGTH_SHORT).show()
         }
@@ -607,6 +584,6 @@ class inferFragment: Fragment(), View.OnClickListener {
 }
 
 
-// todo: add bluetooth module, just need to add a switch
 // todo: softmax need not
 // todo: bluetooth disconnect
+// todo: static capturing
