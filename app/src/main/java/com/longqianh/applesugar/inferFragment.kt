@@ -75,21 +75,6 @@ class inferFragment: Fragment(), View.OnClickListener {
         m_address = arguments?.getString("address")
         Log.d("infer",m_address?:"no address")
 
-
-//        val args = InferFragmentArgs.fromBundle(bundle)
-
-//        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-//        mBlueTooth.write()
-//        if (bluetoothAdapter == null) {
-//            Toast.makeText(requireContext(),"Device doesn't support Bluetooth!",Toast.LENGTH_SHORT).show()
-//            return
-//        }
-//
-//        if (!bluetoothAdapter.isEnabled) {
-//            val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-//            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
-//        }
-
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
