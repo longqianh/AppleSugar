@@ -7,24 +7,16 @@
         to get sugar content prediction.
         \n\nAuthor: Longqian Huang</string>
     <string name="help_text">
-        To use the app, first use the phone camera to get images corresponding 7 wavelengths.
-        The camera parameter should be set as the following instruction:\n\n
-        Whitebalance: sunligh\n
-        Focal length: 27mm\n
-        680nm: ISO-50, Speed-1/125\n
-        700nm: ISO-125, Speed-1/160\n
-        720nm: ISO-125, Speed-1/125\n
-        760nm: ISO-400, Speed-1/40\n
-        780nm: ISO-800, Speed-1/20\n
-        800nm: ISO-3200, Speed-1/30\n
-        810nm: ISO-3200, Speed-1/15\n\n
-        After obtaining 7 images, press Inference button to get into inference page.
-        Use Pick button to select one image and click the corresponding wavelength to
-        set feature on it. \n\n
-        When each wavelength button becomes green, press Get Sugar to obtain
-        sugar content prediction. \n\n
-        Use Cla|Reg switch to change deep learning models, switch left to use classification
-        model, right to use regression model.
+        Follow the following steps to obtain the apple sugar content.\n\n
+<!--        1. Click the menu and choose the Bluetooth to connect the device.\n-->
+<!--        2. Press 'Capture' button to open camera. Choose the corresponding\n-->
+<!--        wavelength button to set camera parameters. \n-->
+<!--        3. After obtaining 7 images, press 'Pick' button to set intensity data.\n-->
+<!--        Switch 'bk|infer' to set background intensity or feature intensity,\n-->
+<!--        4. Use Cla|Reg switch to change deep learning models, switch left to use classification-->
+<!--        model, right to use regression model.\n-->
+<!--        5. After setting all background and feature intensities, \n-->
+<!--        oress 'Get Sugar' button to get predicted sugar content.-->
     </string>
     <string name="text_wl_680">680 nm</string>
     <string name="text_wl_700">700 nm</string>
@@ -75,6 +67,7 @@
     <string name="light_control_text">Light Control</string>
     <string name="model_switch_text">Cla|Reg</string>
     <string name="bk_switch_text">Bk|Infer</string>
+    <string name="button_730_text">730 nm</string>
 
 
 </resources>

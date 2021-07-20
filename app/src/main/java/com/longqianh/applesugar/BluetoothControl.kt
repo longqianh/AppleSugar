@@ -48,9 +48,10 @@ class BluetoothControl {
         }
     }
 
-    fun connect(c:Context)
+    fun connect(c:Context):Boolean
     {
         ConnectToDevice(c).execute()
+        return m_isConnected
     }
 
     private class ConnectToDevice(c: Context) : AsyncTask<Void, Void, String>() {

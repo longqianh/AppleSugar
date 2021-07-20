@@ -31,6 +31,8 @@ class selectDeviceFragment : Fragment() {
     private var m_bluetoothAdapter: BluetoothAdapter? = null
     private lateinit var m_pairedDevices: Set<BluetoothDevice>
     private val REQUEST_ENABLE_BLUETOOTH = 1
+//    private var btControl= BluetoothControl()
+
 
     companion object {
         val EXTRA_ADDRESS: String = "Device_address"
@@ -68,7 +70,15 @@ class selectDeviceFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val navController=Navigation.findNavController(view)
-        binding.selectDeviceRefreshButton.setOnClickListener{ pairedDeviceList(navController) }
+        binding.selectDeviceRefreshButton.setOnClickListener{
+            if(m_bluetoothAdapter==null)
+            {
+                Toast.makeText(requireContext(),"Cannot refresh, not support bluetooth.",Toast.LENGTH_SHORT).show()
+            }
+            else{
+                pairedDeviceList(navController)
+            }
+        }
 
         binding.selectDeviceBackButton.setOnClickListener{
             navController.navigateUp()
@@ -93,8 +103,18 @@ class selectDeviceFragment : Fragment() {
         binding.selectDeviceList.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
             val device: BluetoothDevice = list[position]
             val address: String = device.address
+//            btControl.setAddress(address)
+//            val isConnected = btControl.connect(requireContext())
+//            if(isConnected)
+//            {
+//                Toast.makeText(requireContext(),"Light control mode.",Toast.LENGTH_SHORT).show()
+//            }
+//            else{
+//                Toast.makeText(requireContext(),"Not connected",Toast.LENGTH_SHORT).show()
+//            }
             val bundle = bundleOf("address" to address)
-            navController.navigate(R.id.action_selectDeviceFragment_to_inferFragment, bundle)
+//            navController.navigate(R.id.action_selectDeviceFragment_to_inferFragment, bundle)
+            navController.navigate(R.id.action_selectDeviceFragment_to_cameraFragment,bundle)
 
 //            val intent = Intent(requireContext(), ControlActivity::class.java)
 //            intent.putExtra(EXTRA_ADDRESS, address)

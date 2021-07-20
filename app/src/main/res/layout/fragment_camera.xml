@@ -50,12 +50,12 @@
 
         <Button
             android:id="@+id/camera_680_button"
-
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginBottom="8dp"
             android:text="@string/button_680_text"
+            android:backgroundTint="@color/button_background_color"
             app:layout_constraintBottom_toTopOf="@+id/camera_700_button"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -66,16 +66,18 @@
             android:layout_marginStart="8dp"
             android:layout_marginBottom="8dp"
             android:text="@string/button_700_text"
-            app:layout_constraintBottom_toTopOf="@+id/camera_720_button"
+            android:backgroundTint="@color/button_background_color"
+            app:layout_constraintBottom_toTopOf="@+id/camera_730_button"
             app:layout_constraintStart_toStartOf="parent" />
 
         <Button
-            android:id="@+id/camera_720_button"
+            android:id="@+id/camera_730_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginBottom="8dp"
-            android:text="@string/button_720_text"
+            android:text="@string/button_730_text"
+            android:backgroundTint="@color/button_background_color"
             app:layout_constraintBottom_toTopOf="@+id/camera_760_button"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -85,6 +87,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginBottom="8dp"
+            android:backgroundTint="@color/button_background_color"
             android:text="@string/button_760_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -95,6 +98,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
+            android:backgroundTint="@color/button_background_color"
             android:text="@string/button_780_text"
             app:layout_constraintBottom_toTopOf="@+id/camera_800_button"
             app:layout_constraintEnd_toEndOf="parent" />
@@ -105,6 +109,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
+            android:backgroundTint="@color/button_background_color"
             android:text="@string/button_800_text"
             app:layout_constraintBottom_toTopOf="@+id/camera_830_button"
             app:layout_constraintEnd_toEndOf="parent" />
@@ -115,14 +120,26 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
+            android:backgroundTint="@color/button_background_color"
             android:text="@string/button_830_text"
+            app:layout_constraintBottom_toTopOf="@+id/camera_850_button"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <Button
+            android:id="@+id/camera_850_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/button_850_text"
+            android:backgroundTint="@color/button_background_color"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
         <ImageView
             android:id="@+id/focusRing"
-            android:layout_width="277dp"
-            android:layout_height="248dp"
+            android:layout_width="232dp"
+            android:layout_height="207dp"
             android:layout_gravity="center_horizontal|center_vertical"
             android:src="@drawable/focus_ring"
             app:layout_constraintBottom_toBottomOf="parent"

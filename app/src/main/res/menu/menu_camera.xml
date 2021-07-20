@@ -2,28 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/menu_680"
-        android:title="@string/text_wl_680" />
+        android:id="@+id/menu_about"
+        android:title="@string/menu_about_text" />
     <item
-        android:id="@+id/menu_700"
-        android:title="@string/text_wl_700" />
+        android:id="@+id/menu_help"
+        android:title="@string/menu_help_text" />
 
-    <item
-        android:id="@+id/menu_720"
-        android:title="@string/text_wl_720" />
-    <item
-        android:id="@+id/menu_760"
-        android:title="@string/text_wl_760" />
+        <item
+            android:id="@+id/menu_bluetooth"
+            android:title="@string/menu_bluetooth_text" />
 
-    <item
-        android:id="@+id/menu_780"
-        android:title="@string/text_wl_780" />
-    <item
-        android:id="@+id/menu_800"
-        android:title="@string/text_wl_800" />
 
-    <item
-        android:id="@+id/menu_830"
-        android:title="@string/text_wl_830" />
 
 </menu>

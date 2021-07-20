@@ -49,8 +49,8 @@ import kotlin.math.sqrt
 
 class inferFragment: Fragment(), View.OnClickListener {
 
-    private val REQUEST_CONNECT_DEVICE_SECURE = 1
-    private val REQUEST_CONNECT_DEVICE_INSECURE = 2
+//    private val REQUEST_CONNECT_DEVICE_SECURE = 1
+//    private val REQUEST_CONNECT_DEVICE_INSECURE = 2
     private val REQUEST_ENABLE_BT = 3
 
     private var _binding: InferFragmentBinding? = null
@@ -65,17 +65,17 @@ class inferFragment: Fragment(), View.OnClickListener {
     private var intensity: Double = 0.0
     private lateinit var contentResolver: ContentResolver
     private lateinit var am: AssetManager
-    private var m_address:String?=null
-    private var btControl= BluetoothControl()
+//    private var m_address:String?=null
+//    private var btControl= BluetoothControl()
 
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        m_address = arguments?.getString("address")
-        Log.d("infer",m_address?:"no address")
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//        m_address = arguments?.getString("address")
+//        Log.d("infer",m_address?:"no address")
 
-    }
+//    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -99,24 +99,23 @@ class inferFragment: Fragment(), View.OnClickListener {
             intensity = getIntensity(uri)
         }
 
-//        m_address=activity.sharedData
-
         binding.sugarText.visibility = View.GONE
         am = requireContext().assets
 
         binding.pick680Button.setOnClickListener(this) // click 后会调用 onClick
         binding.pick700Button.setOnClickListener(this)
-        binding.pick720Button.setOnClickListener(this)
+        binding.pick730Button.setOnClickListener(this)
         binding.pick760Button.setOnClickListener(this)
         binding.pick780Button.setOnClickListener(this)
         binding.pick800Button.setOnClickListener(this)
         binding.pick830Button.setOnClickListener(this)
         binding.pick850Button.setOnClickListener(this)
         binding.captureButton.setOnClickListener(this)
-        binding.lightControlSwitch.setOnClickListener(this)
+        binding.pickButton.setOnClickListener(this)
+//        binding.lightControlSwitch.setOnClickListener(this)
         binding.getSugarButton.setOnClickListener(this)
         binding.modelSwitch.setOnClickListener(this)
-        binding.bkSwitch.setOnClickListener(this)
+//        binding.bkSwitch.setOnClickListener(this)
 
 
     }
@@ -135,8 +134,8 @@ class inferFragment: Fragment(), View.OnClickListener {
                 processButton(binding.pick700Button,1)
             }
 
-            R.id.pick720_button -> {
-                processButton(binding.pick720Button,2)
+            R.id.pick730_button -> {
+                processButton(binding.pick730Button,2)
             }
 
             R.id.pick760_button -> {
@@ -155,7 +154,9 @@ class inferFragment: Fragment(), View.OnClickListener {
                 processButton(binding.pick830Button,6)
             }
 
-
+            R.id.pick850_button -> {
+                processButton(binding.pick830Button,7)
+            }
 
             R.id.get_sugar_button -> {
                 Toast.makeText(
@@ -190,45 +191,51 @@ class inferFragment: Fragment(), View.OnClickListener {
                 }
             }
 
-            R.id.bk_switch ->{
-                if(!binding.lightControlSwitch.isChecked)
-                {
-                    if(binding.bkSwitch.isChecked)
-                    {
-                        changeButtonState(2)
-                    }
-                    else{
-                        changeButtonState(3)
-                    }
-                }
-            }
+//            R.id.bk_switch ->{
+//                if(!binding.lightControlSwitch.isChecked)
+//                {
+//                    if(binding.bkSwitch.isChecked)
+//                    {
+//                        changeButtonState(2)
+//                    }
+//                    else{
+//                        changeButtonState(3)
+//                    }
+//                }
+//            }
 
-            R.id.light_control_switch ->{
-                if(binding.lightControlSwitch.isChecked)
-                {
-                    changeButtonState(1)
-                    if(m_address==null)
-                    {
-                        Toast.makeText(requireContext(),"Bluetooth not connect!",Toast.LENGTH_SHORT).show()
-                        binding.lightControlSwitch.isChecked=false
-                    }
-                    else{
-                        Toast.makeText(requireContext(),"Light control mode.",Toast.LENGTH_SHORT).show()
-                        btControl.setAddress(m_address!!)
-                        btControl.connect(requireContext())
-                    }
-
-                }
-                else{
-                    if(binding.bkSwitch.isChecked)
-                    {
-                        changeButtonState(2)
-                    }
-                    else{
-                        changeButtonState(3)
-                    }
-                }
-            }
+//            R.id.light_control_switch ->{
+//                if(binding.lightControlSwitch.isChecked)
+//                {
+//                    changeButtonState(1)
+//                    if(m_address==null)
+//                    {
+//                        Toast.makeText(requireContext(),"Bluetooth not connect!",Toast.LENGTH_SHORT).show()
+//                        binding.lightControlSwitch.isChecked=false
+//                    }
+//                    else{
+//                        btControl.setAddress(m_address!!)
+//                        val isConnected = btControl.connect(requireContext())
+//                        if(isConnected)
+//                        {
+//                            Toast.makeText(requireContext(),"Light control mode.",Toast.LENGTH_SHORT).show()
+//                        }
+//                        else{
+//                            Toast.makeText(requireContext(),"Not connected",Toast.LENGTH_SHORT).show()
+//                        }
+//                    }
+//
+//                }
+//                else{
+//                    if(binding.bkSwitch.isChecked)
+//                    {
+//                        changeButtonState(2)
+//                    }
+//                    else{
+//                        changeButtonState(3)
+//                    }
+//                }
+//            }
         }
     }
 
@@ -251,98 +258,105 @@ class inferFragment: Fragment(), View.OnClickListener {
 //   todo:   pick intent result check
     }
 
-    private fun changeButtonState(stateType:Int)
-    {
-        when(stateType)
-        {
-            1-> // light control
-            {
-                binding.pick680Button.isSelected=viewModel.lightControlSelect[0]
-                binding.pick700Button.isSelected=viewModel.lightControlSelect[1]
-                binding.pick720Button.isSelected=viewModel.lightControlSelect[2]
-                binding.pick760Button.isSelected=viewModel.lightControlSelect[3]
-                binding.pick780Button.isSelected=viewModel.lightControlSelect[4]
-                binding.pick800Button.isSelected=viewModel.lightControlSelect[5]
-                binding.pick830Button.isSelected=viewModel.lightControlSelect[6]
-            }
-            2-> // feature setting
-            {
-                Toast.makeText(requireContext(),"Change to feature setting mode.",Toast.LENGTH_SHORT).show()
-                binding.pick680Button.isSelected=viewModel.inferButtonSelect[0]
-                binding.pick700Button.isSelected=viewModel.inferButtonSelect[1]
-                binding.pick720Button.isSelected=viewModel.inferButtonSelect[2]
-                binding.pick760Button.isSelected=viewModel.inferButtonSelect[3]
-                binding.pick780Button.isSelected=viewModel.inferButtonSelect[4]
-                binding.pick800Button.isSelected=viewModel.inferButtonSelect[5]
-                binding.pick830Button.isSelected=viewModel.inferButtonSelect[6]
-            }
-            3-> // bk setting
-            {
-                Toast.makeText(requireContext(),"Change to background setting mode.",Toast.LENGTH_SHORT).show()
-                binding.pick680Button.isSelected=viewModel.bkButtonSelect[0]
-                binding.pick700Button.isSelected=viewModel.bkButtonSelect[1]
-                binding.pick720Button.isSelected=viewModel.bkButtonSelect[2]
-                binding.pick760Button.isSelected=viewModel.bkButtonSelect[3]
-                binding.pick780Button.isSelected=viewModel.bkButtonSelect[4]
-                binding.pick800Button.isSelected=viewModel.bkButtonSelect[5]
-                binding.pick830Button.isSelected=viewModel.bkButtonSelect[6]
-            }
-        }
-
-    }
+//    private fun changeButtonState(stateType:Int)
+//    {
+//        when(stateType)
+//        {
+//            1-> // light control
+//            {
+//                binding.pick680Button.isSelected=viewModel.lightControlSelect[0]
+//                binding.pick700Button.isSelected=viewModel.lightControlSelect[1]
+//                binding.pick730Button.isSelected=viewModel.lightControlSelect[2]
+//                binding.pick760Button.isSelected=viewModel.lightControlSelect[3]
+//                binding.pick780Button.isSelected=viewModel.lightControlSelect[4]
+//                binding.pick800Button.isSelected=viewModel.lightControlSelect[5]
+//                binding.pick830Button.isSelected=viewModel.lightControlSelect[6]
+//            }
+//            2-> // feature setting
+//            {
+//                Toast.makeText(requireContext(),"Change to feature setting mode.",Toast.LENGTH_SHORT).show()
+//                binding.pick680Button.isSelected=viewModel.inferButtonSelect[0]
+//                binding.pick700Button.isSelected=viewModel.inferButtonSelect[1]
+//                binding.pick730Button.isSelected=viewModel.inferButtonSelect[2]
+//                binding.pick760Button.isSelected=viewModel.inferButtonSelect[3]
+//                binding.pick780Button.isSelected=viewModel.inferButtonSelect[4]
+//                binding.pick800Button.isSelected=viewModel.inferButtonSelect[5]
+//                binding.pick830Button.isSelected=viewModel.inferButtonSelect[6]
+//            }
+//            3-> // bk setting
+//            {
+//                Toast.makeText(requireContext(),"Change to background setting mode.",Toast.LENGTH_SHORT).show()
+//                binding.pick680Button.isSelected=viewModel.bkButtonSelect[0]
+//                binding.pick700Button.isSelected=viewModel.bkButtonSelect[1]
+//                binding.pick730Button.isSelected=viewModel.bkButtonSelect[2]
+//                binding.pick760Button.isSelected=viewModel.bkButtonSelect[3]
+//                binding.pick780Button.isSelected=viewModel.bkButtonSelect[4]
+//                binding.pick800Button.isSelected=viewModel.bkButtonSelect[5]
+//                binding.pick830Button.isSelected=viewModel.bkButtonSelect[6]
+//            }
+//        }
+//
+//    }
 
     private fun processButton(btn:Button,index:Int)
     {
         // in a certain state
         btn.isSelected=!btn.isSelected
-        if(!binding.lightControlSwitch.isChecked)
+        if (btn.isSelected)
         {
-            if(binding.bkSwitch.isChecked)
-            {
-                viewModel.inferButtonSelect[index] = btn.isSelected
-                binding.showSugarText.text = "Feature-$index: ${viewModel.features[index]}"
-                if (btn.isSelected)
-                {
-                    if(viewModel.bk[index]==0.0)
-                    {
-                        Toast.makeText(requireContext(),"Please set background intensity first.",Toast.LENGTH_SHORT).show()
-                    }
-                    else{
-                        viewModel.features[index] = intensity / viewModel.bk[index]
-                    }
-                }
-                else{
-                    viewModel.features[index] = 0.0
-                    Toast.makeText(requireContext(),"Set feature intensity to 0.",Toast.LENGTH_SHORT).show()
-                }
-            }
-            else{
-                viewModel.bkButtonSelect[index] = btn.isSelected
-                binding.showSugarText.text = "Background-$index: ${viewModel.bk[index]}"
-                if (btn.isSelected)
-                {
-                    viewModel.bk[index] = intensity
-                }
-                else{
-                    viewModel.bk[index] = 0.0
-                    Toast.makeText(requireContext(),"Set background intensity to 0.",Toast.LENGTH_SHORT).show()
-                }
-            }
-
+            viewModel.features[index] = intensity - viewModel.bk[index]
         }
-
         else{
-            viewModel.lightControlSelect[index]=btn.isSelected
-            if (btn.isSelected)
-            {
-                btControl.sendCommand(index.toString())
-            }
-            else{
-                btControl.sendCommand("f")
-            }
-//            sendMessage(index) // turn on index and turn off others
-            Toast.makeText(requireContext(),"Set $index light on.",Toast.LENGTH_SHORT).show()
+            viewModel.features[index] = 0.0
         }
+//        if(!binding.lightControlSwitch.isChecked)
+//        {
+//        if(binding.bkSwitch.isChecked)
+//        {
+//            viewModel.inferButtonSelect[index] = btn.isSelected
+//            binding.showSugarText.text = "Feature-$index: ${viewModel.features[index]}"
+//            if (btn.isSelected)
+//            {
+//                if(viewModel.bk[index]==0.0)
+//                {
+//                    Toast.makeText(requireContext(),"Please set background intensity first.",Toast.LENGTH_SHORT).show()
+//                }
+//                else{
+//                    viewModel.features[index] = intensity / viewModel.bk[index]
+//                }
+//            }
+//            else{
+//                viewModel.features[index] = 0.0
+//                Toast.makeText(requireContext(),"Set feature intensity to 0.",Toast.LENGTH_SHORT).show()
+//            }
+//        }
+//        else{
+//            viewModel.bkButtonSelect[index] = btn.isSelected
+//            binding.showSugarText.text = "Background-$index: ${viewModel.bk[index]}"
+//            if (btn.isSelected)
+//            {
+//                viewModel.bk[index] = intensity
+//            }
+//            else{
+//                viewModel.bk[index] = 0.0
+//                Toast.makeText(requireContext(),"Set background intensity to 0.",Toast.LENGTH_SHORT).show()
+//            }
+//        }
+
+//        }
+
+//        else{
+//            viewModel.lightControlSelect[index]=btn.isSelected
+//            if (btn.isSelected)
+//            {
+//                btControl.sendCommand(index.toString())
+//            }
+//            else{
+//                btControl.sendCommand("f")
+//            }
+////            sendMessage(index) // turn on index and turn off others
+//            Toast.makeText(requireContext(),"Set $index light on.",Toast.LENGTH_SHORT).show()
+//        }
 
 
 
@@ -365,10 +379,10 @@ class inferFragment: Fragment(), View.OnClickListener {
                 true
             }
 
-            R.id.menu_bluetooth ->{
-                Navigation.findNavController(requireView()).navigate(R.id.action_inferFragment_to_selectDeviceFragment)
-                true
-            }
+//            R.id.menu_bluetooth ->{
+//                Navigation.findNavController(requireView()).navigate(R.id.action_inferFragment_to_selectDeviceFragment)
+//                true
+//            }
             else -> super.onOptionsItemSelected(item)
         }
     }

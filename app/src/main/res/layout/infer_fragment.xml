@@ -96,12 +96,12 @@
                 app:layout_constraintTop_toTopOf="@+id/pick780_button" />
 
             <Button
-                android:id="@+id/pick720_button"
+                android:id="@+id/pick730_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:backgroundTint="@color/button_background_color"
-                android:text="@string/button_720_text"
+                android:text="@string/button_730_text"
                 app:layout_constraintStart_toEndOf="@+id/pick700_button"
                 app:layout_constraintTop_toTopOf="@+id/pick700_button" />
 
@@ -124,7 +124,7 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/button_background_color"
                 android:text="@string/button_800_text"
-                app:layout_constraintEnd_toEndOf="@+id/pick720_button"
+                app:layout_constraintEnd_toEndOf="@+id/pick730_button"
                 app:layout_constraintTop_toTopOf="@+id/pick780_button" />
 
             <Button
@@ -227,24 +227,24 @@
                 app:layout_constraintEnd_toStartOf="@+id/get_sugar_button"
                 app:layout_constraintTop_toBottomOf="@+id/pick830_button" />
 
-            <Switch
-                android:id="@+id/bk_switch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="48dp"
-                android:layout_marginBottom="32dp"
-                android:text="@string/bk_switch_text"
-                app:layout_constraintBottom_toTopOf="@+id/show_sugar_text"
-                app:layout_constraintStart_toStartOf="parent" />
+<!--            <Switch-->
+<!--                android:id="@+id/bk_switch"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="48dp"-->
+<!--                android:layout_marginBottom="32dp"-->
+<!--                android:text="@string/bk_switch_text"-->
+<!--                app:layout_constraintBottom_toTopOf="@+id/show_sugar_text"-->
+<!--                app:layout_constraintStart_toStartOf="parent" />-->
 
-            <Switch
-                android:id="@+id/light_control_switch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="@string/light_control_text"
-                app:layout_constraintBottom_toTopOf="@+id/bk_switch"
-                app:layout_constraintEnd_toEndOf="@+id/bk_switch" />
+<!--            <Switch-->
+<!--                android:id="@+id/light_control_switch"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginBottom="8dp"-->
+<!--                android:text="@string/light_control_text"-->
+<!--                app:layout_constraintBottom_toTopOf="@+id/bk_switch"-->
+<!--                app:layout_constraintEnd_toEndOf="@+id/bk_switch" />-->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

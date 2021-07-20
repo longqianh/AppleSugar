@@ -14,15 +14,15 @@ import android.view.View.OnTouchListener
  * 自定义CameraX点击事件
  */
 class CameraXPreviewViewTouchListener(context: Context?) : OnTouchListener {
-//    private val mGestureDetector: GestureDetector
+    private val mGestureDetector: GestureDetector
     private var mCustomTouchListener: CustomTouchListener? = null
-//    private val mScaleGestureDetector: ScaleGestureDetector // 缩放手势检测
+    private val mScaleGestureDetector: ScaleGestureDetector // 缩放手势检测
 
     override fun onTouch(v: View, event: MotionEvent): Boolean {
-//        mScaleGestureDetector.onTouchEvent(event)
-//        if (!mScaleGestureDetector.isInProgress) {
-//            mGestureDetector.onTouchEvent(event)
-//        }
+        mScaleGestureDetector.onTouchEvent(event)
+        if (!mScaleGestureDetector.isInProgress) {
+            mGestureDetector.onTouchEvent(event)
+        }
         return true
     }
 
@@ -32,68 +32,68 @@ class CameraXPreviewViewTouchListener(context: Context?) : OnTouchListener {
     }
 
     // 缩放监听
-//    var onScaleGestureListener: OnScaleGestureListener = object : SimpleOnScaleGestureListener() {
-//        override fun onScale(detector: ScaleGestureDetector): Boolean {
-//            val delta = detector.scaleFactor
-//            if (mCustomTouchListener != null) {
-//                mCustomTouchListener!!.zoom(delta)
-//            }
-//            return true
-//        }
-//    }
+    var onScaleGestureListener: OnScaleGestureListener = object : SimpleOnScaleGestureListener() {
+        override fun onScale(detector: ScaleGestureDetector): Boolean {
+            val delta = detector.scaleFactor
+            if (mCustomTouchListener != null) {
+                mCustomTouchListener!!.zoom(delta)
+            }
+            return true
+        }
+    }
 
     // 点击监听
-//    var onGestureListener: SimpleOnGestureListener = object : SimpleOnGestureListener() {
+    var onGestureListener: SimpleOnGestureListener = object : SimpleOnGestureListener() {
 //        override fun onLongPress(e: MotionEvent) {
 //            if (mCustomTouchListener != null) {
 //                // 长按
 //                mCustomTouchListener!!.longPress(e.x, e.y)
 //            }
 //        }
-//
-//        override fun onFling(
-//            e1: MotionEvent,
-//            e2: MotionEvent,
-//            velocityX: Float,
-//            velocityY: Float
-//        ): Boolean {
-//            return true
-//        }
-//
+
+        override fun onFling(
+            e1: MotionEvent,
+            e2: MotionEvent,
+            velocityX: Float,
+            velocityY: Float
+        ): Boolean {
+            return true
+        }
+
 //        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
 //            if (mCustomTouchListener != null) {
-//                // 单击
+                // 单击
 //                mCustomTouchListener!!.click(e.x, e.y)
 //            }
 //            return true
 //        }
-//
-//        override fun onDoubleTap(e: MotionEvent): Boolean {
-//            if (mCustomTouchListener != null) {
-//                // 双击
-//                mCustomTouchListener!!.doubleClick(e.x, e.y)
-//            }
-//            return true
-//        }
-//    }
+
+        override fun onDoubleTap(e: MotionEvent): Boolean {
+            if (mCustomTouchListener != null) {
+                // 双击
+                mCustomTouchListener!!.doubleClick(e.x, e.y)
+            }
+            return true
+        }
+    }
 
     // 操作接口
     interface CustomTouchListener {
         // 放大缩小
-//        fun zoom(delta: Float)
+        fun zoom(delta: Float)
 
         // 点击
-        fun click(x: Float, y: Float)
+//        fun click(x: Float, y: Float)
 
         // 双击
-//        fun doubleClick(x: Float, y: Float)
+        fun doubleClick(x: Float, y: Float)
 
         // 长按
 //        fun longPress(x: Float, y: Float)
     }
 
-//    init {
-//        mGestureDetector = GestureDetector(context, onGestureListener)
-//        mScaleGestureDetector = ScaleGestureDetector(context, onScaleGestureListener)
-//    }
+    init {
+        mGestureDetector = GestureDetector(context, onGestureListener)
+        mScaleGestureDetector = ScaleGestureDetector(context, onScaleGestureListener)
+    }
 }

@@ -18,6 +18,7 @@ import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
 import androidx.navigation.Navigation
 import com.google.common.util.concurrent.ListenableFuture
 import com.longqianh.applesugar.databinding.InferFragmentBinding
@@ -36,14 +37,20 @@ class cameraFragment : Fragment() {
     private lateinit var cameraPreviewView: PreviewView
     private var mCameraControl: CameraControl? = null
     private var mCameraInfo: CameraInfo? = null
+    private var btControl= BluetoothControl()
+    private var m_address:String?=null
+    private var stateWavelengthIndex=0
 
-    val isoArray=intArrayOf(50,125,125,400,800,3200,3200)
-    val speedArray= longArrayOf(8000000L,6250000L,8000000L,25000000L,50000000L,33333333L,66666667L)
+//    680, 700, 730, 760, 780, 800, 830, 850
+    val isoArray=intArrayOf(100,200,500,1250,1250,4000,4000,6400)
+    val speedArray= longArrayOf(3125000L,3125000L,4000000L,10000000L,20000000L,20000000L,50000000L,66666667L)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         outputDirectory = MainActivity.getOutputDirectory(requireContext())
         cameraExecutor = Executors.newSingleThreadExecutor()
+        m_address = arguments?.getString("address")
+//        Log.d("infer",m_address?:"no address")
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,6 +63,23 @@ class cameraFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if(m_address==null)
+        {
+            Toast.makeText(requireContext(),"Bluetooth not connected.",Toast.LENGTH_SHORT).show()
+        }
+        else{
+            btControl.setAddress(m_address!!)
+            val isConnected = btControl.connect(requireContext())
+            if(isConnected)
+            {
+                Toast.makeText(requireContext(),"Light control ok.",Toast.LENGTH_SHORT).show()
+            }
+            else{
+                Toast.makeText(requireContext(),"Bluetooth not connected",Toast.LENGTH_SHORT).show()
+            }
+        }
+
+
         cameraPreviewView=view.findViewById(R.id.cameraPreview)
         // Request camera permissions
         if (allPermissionsGranted()) {
@@ -67,39 +91,58 @@ class cameraFragment : Fragment() {
                 requireActivity(), REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
         }
 
-//        startCamera(view.findViewById(R.id.cameraPreview))
         view.findViewById<Button>(R.id.camera_capture_button).setOnClickListener {
-//            println("hello")
-            takePhoto()
+            takePhoto(stateWavelengthIndex)
         }
 
-        view.findViewById<Button>(R.id.camera_680_button).setOnClickListener {
-            startCamera(cameraPreviewView,isoArray[0],speedArray[0])
+        val btn680=view.findViewById<Button>(R.id.camera_680_button)
+        btn680.setOnClickListener {
+//            startCamera(cameraPreviewView,isoArray[0],speedArray[0])
+            processCameraButton(btn680,0)
         }
 
-        view.findViewById<Button>(R.id.camera_700_button).setOnClickListener {
-            startCamera(cameraPreviewView,isoArray[1],speedArray[1])
+        val btn700=view.findViewById<Button>(R.id.camera_700_button)
+        btn700.setOnClickListener {
+//            startCamera(cameraPreviewView,isoArray[1],speedArray[1])
+            processCameraButton(btn700,1)
         }
 
-        view.findViewById<Button>(R.id.camera_720_button).setOnClickListener {
-            startCamera(cameraPreviewView,isoArray[2],speedArray[2])
+
+        val btn730=view.findViewById<Button>(R.id.camera_730_button)
+        btn730.setOnClickListener {
+//            startCamera(cameraPreviewView,isoArray[2],speedArray[2])
+            processCameraButton(btn730,2)
         }
-        view.findViewById<Button>(R.id.camera_760_button).setOnClickListener {
-            startCamera(cameraPreviewView,isoArray[3],speedArray[3])
+
+        val btn760=view.findViewById<Button>(R.id.camera_760_button)
+        btn760.setOnClickListener {
+            processCameraButton(btn760,3)
+//            startCamera(cameraPreviewView,isoArray[3],speedArray[3])
         }
-        view.findViewById<Button>(R.id.camera_780_button).setOnClickListener {
-            startCamera(cameraPreviewView,isoArray[4],speedArray[4])
+        val btn780=view.findViewById<Button>(R.id.camera_780_button)
+        btn780.setOnClickListener {
+            processCameraButton(btn780,4)
+//            startCamera(cameraPreviewView,isoArray[3],speedArray[3])
         }
-        view.findViewById<Button>(R.id.camera_800_button).setOnClickListener {
-            startCamera(cameraPreviewView,isoArray[5],speedArray[5])
+        val btn800=view.findViewById<Button>(R.id.camera_800_button)
+        btn780.setOnClickListener {
+            processCameraButton(btn800,5)
+//            startCamera(cameraPreviewView,isoArray[3],speedArray[3])
         }
-        view.findViewById<Button>(R.id.camera_830_button).setOnClickListener {
-            startCamera(cameraPreviewView,isoArray[6],speedArray[6])
+        val btn830=view.findViewById<Button>(R.id.camera_830_button)
+        btn830.setOnClickListener {
+            processCameraButton(btn830,6)
+//            startCamera(cameraPreviewView,isoArray[3],speedArray[3])
         }
+
+        val btn850=view.findViewById<Button>(R.id.camera_850_button)
+        btn850.setOnClickListener {
+            processCameraButton(btn850,7)
+        }
+
 
         view.findViewById<Button>(R.id.camera_back_button).setOnClickListener{
             Navigation.findNavController(it).navigateUp()
-//                .navigate(R.id.action_cameraFragment_to_inferFragment)
         }
     }
 
@@ -110,33 +153,17 @@ class cameraFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.menu_680 -> {
-                startCamera(cameraPreviewView,isoArray[0],speedArray[0])
+            R.id.menu_about -> {
+                Navigation.findNavController(requireView()).navigate(R.id.action_cameraFragment_to_aboutFragment)
                 true
             }
-            R.id.menu_700 ->{
-                startCamera(cameraPreviewView,isoArray[1],speedArray[1])
+            R.id.menu_help ->{
+                Navigation.findNavController(requireView()).navigate(R.id.action_cameraFragment_to_helpFragment)
                 true
             }
 
-            R.id.menu_720 ->{
-                startCamera(cameraPreviewView,isoArray[2],speedArray[2])
-                true
-            }
-            R.id.menu_760 ->{
-                startCamera(cameraPreviewView,isoArray[3],speedArray[3])
-                true
-            }
-            R.id.menu_780 ->{
-                startCamera(cameraPreviewView,isoArray[4],speedArray[4])
-                true
-            }
-            R.id.menu_800 ->{
-                startCamera(cameraPreviewView,isoArray[5],speedArray[5])
-                true
-            }
-            R.id.menu_830 ->{
-                startCamera(cameraPreviewView,isoArray[6],speedArray[6])
+            R.id.menu_bluetooth ->{
+                Navigation.findNavController(requireView()).navigate(R.id.action_cameraFragment_to_selectDeviceFragment)
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -148,6 +175,21 @@ class cameraFragment : Fragment() {
         cameraExecutor.shutdown()
     }
 
+
+    private fun processCameraButton(btn:Button,index:Int)
+    {
+        btn.isSelected=!btn.isSelected
+        if (btn.isSelected)
+        {
+            btControl.sendCommand(index.toString())
+            startCamera(cameraPreviewView,isoArray[index],speedArray[index])
+        }
+        else{
+            btControl.sendCommand("f")
+        }
+        stateWavelengthIndex=index
+
+    }
     private fun startCamera(cameraPreviewView:PreviewView,iso:Int,exposureTime:Long) {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
         cameraProviderFuture.addListener({
@@ -156,11 +198,12 @@ class cameraFragment : Fragment() {
 //            val myISO=400
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
             val imageCaptureBuilder = ImageCapture.Builder()
+            imageCaptureBuilder.setTargetResolution(Size(640, 480))
             Camera2Interop.Extender(imageCaptureBuilder)
 //                .setCaptureRequestOption(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_OFF)
                 .setCaptureRequestOption(CaptureRequest.CONTROL_AF_MODE,CameraMetadata.CONTROL_AF_MODE_OFF)
                 .setCaptureRequestOption(CaptureRequest.CONTROL_AF_TRIGGER, CameraMetadata.CONTROL_AF_TRIGGER_START)
-                .setCaptureRequestOption(CaptureRequest.LENS_FOCAL_LENGTH, 25.0F) // mm
+                .setCaptureRequestOption(CaptureRequest.LENS_FOCUS_DISTANCE, 25.0F) // mm
                 .setCaptureRequestOption(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION, 0)
                 .setCaptureRequestOption(CaptureRequest.CONTROL_AWB_MODE, CameraMetadata.CONTROL_AWB_MODE_DAYLIGHT) // turn off auto white balance
                 .setCaptureRequestOption(CaptureRequest.CONTROL_AWB_LOCK, true)
@@ -177,9 +220,9 @@ class cameraFragment : Fragment() {
                     it.setSurfaceProvider(cameraPreviewView.surfaceProvider)
                 }
 //
-            val imageAnalysis = ImageAnalysis.Builder()
-                .setTargetResolution(Size(640, 480))
-                .build()
+//            val imageAnalysis = ImageAnalysis.Builder()
+//                .setTargetResolution(Size(640, 480))
+//                .build()
 
             // Select back camera as a default
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
@@ -189,7 +232,7 @@ class cameraFragment : Fragment() {
             // A variable number of use-cases can be passed here -
             // camera provides access to CameraControl & CameraInfo
             val camera=cameraProvider.bindToLifecycle(
-                this, cameraSelector, preview, imageCapture,imageAnalysis)
+                this, cameraSelector, preview, imageCapture)
 
             // 相机控制，如点击
             mCameraControl = camera.cameraControl
@@ -204,47 +247,47 @@ class cameraFragment : Fragment() {
     // 相机点击等相关操作监听
     private fun initCameraListener() {
         val cameraXPreviewViewTouchListener = CameraXPreviewViewTouchListener(requireContext())
-//        val zoomState: LiveData<ZoomState> = mCameraInfo!!.zoomState
+        val zoomState: LiveData<ZoomState> = mCameraInfo!!.zoomState
         cameraXPreviewViewTouchListener.setCustomTouchListener(object :
             CameraXPreviewViewTouchListener.CustomTouchListener {
-//
-//            override fun zoom(delta: Float) {
-//
-//                Log.d(TAG, "缩放")
-//                zoomState.value?.let {
-//                    val currentZoomRatio = it.zoomRatio
-//                    mCameraControl!!.setZoomRatio(currentZoomRatio * delta)
-//                }
-//            }
+
+            override fun zoom(delta: Float) {
+
+                Log.d(TAG, "缩放")
+                zoomState.value?.let {
+                    val currentZoomRatio = it.zoomRatio
+                    mCameraControl!!.setZoomRatio(currentZoomRatio * delta)
+                }
+            }
 
 
             // 点击操作
-            override fun click(x: Float, y: Float) {
-//                println("clicked")
-                val factory = cameraPreviewView.meteringPointFactory
-                // 设置对焦位置
-                val point = factory.createPoint(x, y)
-                val action = FocusMeteringAction.Builder(point, FocusMeteringAction.FLAG_AF)
-                    // 3秒内自动调用取消对焦
-//                    .setAutoCancelDuration(5, TimeUnit.SECONDS)
-                    .build()
-                // 执行对焦
-                mCameraControl!!.startFocusAndMetering(action)
-//
+//            override fun click(x: Float, y: Float) {
+////                println("clicked")
+//                val factory = cameraPreviewView.meteringPointFactory
+//                // 设置对焦位置
+//                val point = factory.createPoint(x, y)
+//                val action = FocusMeteringAction.Builder(point, FocusMeteringAction.FLAG_AF)
+//                    // 3秒内自动调用取消对焦
+////                    .setAutoCancelDuration(5, TimeUnit.SECONDS)
+//                    .build()
+//                // 执行对焦
+//                mCameraControl!!.startFocusAndMetering(action)
+////
+//            }
+
+            // 双击操作
+            override fun doubleClick(x: Float, y: Float) {
+                Log.d(TAG, "双击")
+                // 双击放大缩小
+                val currentZoomRatio = zoomState.value!!.zoomRatio
+                if (currentZoomRatio > zoomState.value!!.minZoomRatio) {
+                    mCameraControl!!.setLinearZoom(0f)
+                } else {
+                    mCameraControl!!.setLinearZoom(0.5f)
+                }
             }
 
-//            // 双击操作
-//            override fun doubleClick(x: Float, y: Float) {
-//                Log.d(TAG, "双击")
-//                // 双击放大缩小
-//                val currentZoomRatio = zoomState.value!!.zoomRatio
-//                if (currentZoomRatio > zoomState.value!!.minZoomRatio) {
-//                    mCameraControl!!.setLinearZoom(0f)
-//                } else {
-//                    mCameraControl!!.setLinearZoom(0.5f)
-//                }
-//            }
-//
 //            override fun longPress(x: Float, y: Float) {
 //                Log.d(TAG, "长按")
 //            }
@@ -257,13 +300,14 @@ class cameraFragment : Fragment() {
 
     }
 
-    private fun takePhoto() {
+    private fun takePhoto(index:Int) {
         // Get a stable reference of the modifiable image capture use case
         val imageCapture = imageCapture ?: return
 
         // Create time-stamped output file to hold the image
 
-        val photoFile = createFile(outputDirectory, FILENAME_FORMAT, PHOTO_EXTENSION)
+        val wavelengthMap= intArrayOf(680,700,730,760,780,800,830,850)
+        val photoFile = createFile(outputDirectory, wavelengthMap[index].toString(), PHOTO_EXTENSION)
 
         // Create output options object which contains file + metadata
         val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
@@ -297,10 +341,12 @@ class cameraFragment : Fragment() {
         private const val PHOTO_EXTENSION = ".jpg"
         private const val REQUEST_CODE_PERMISSIONS = 10
         private val REQUIRED_PERMISSIONS = arrayOf(android.Manifest.permission.CAMERA)
-        private fun createFile(baseFolder: File, format: String, extension: String) =
-            File(baseFolder, SimpleDateFormat(format, Locale.US)
-                .format(System.currentTimeMillis()) + extension)
+        private fun createFile(baseFolder: File, name: String, extension: String) =
+//            File(baseFolder, SimpleDateFormat(format, Locale.US)
+//                .format(System.currentTimeMillis()) + extension)
+            File(baseFolder,name+extension)
     }
+
 
 }
 
