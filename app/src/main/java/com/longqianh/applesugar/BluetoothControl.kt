@@ -36,6 +36,10 @@ class BluetoothControl {
         m_address=address
     }
 
+    fun getConnectState():Boolean
+    {
+        return m_isConnected
+    }
     fun disconnect() {
         if (m_bluetoothSocket != null) {
             try {

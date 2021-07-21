@@ -105,4 +105,5 @@ dependencies {
     implementation("androidx.fragment:fragment-ktx:$fragment_version")
 
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+
 }

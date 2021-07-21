@@ -21,6 +21,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.navigation.Navigation
 import com.google.common.util.concurrent.ListenableFuture
+import com.longqianh.applesugar.databinding.FragmentCameraBinding
 import com.longqianh.applesugar.databinding.InferFragmentBinding
 import com.longqianh.applesugar.view.CameraXPreviewViewTouchListener
 import java.io.File
@@ -40,17 +41,27 @@ class cameraFragment : Fragment() {
     private var btControl= BluetoothControl()
     private var m_address:String?=null
     private var stateWavelengthIndex=0
+    private var developer=false
+
+    private var stateAppleNum=0
+
+    private var _binding: FragmentCameraBinding? = null
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _binding!!
+
 
 //    680, 700, 730, 760, 780, 800, 830, 850
-    val isoArray=intArrayOf(100,200,500,1250,1250,4000,4000,6400)
-    val speedArray= longArrayOf(3125000L,3125000L,4000000L,10000000L,20000000L,20000000L,50000000L,66666667L)
+    val isoArray=intArrayOf(100,200,500,1250,4000,4000,6400,6400)
+    val speedArray= longArrayOf(3125000L,3125000L,10000000L,20000000L,20000000L,50000000L,50000000L,66666667L)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        outputDirectory = MainActivity.getOutputDirectory(requireContext())
+        outputDirectory = MainActivity.getOutputDirectory(requireContext(),developer)
         cameraExecutor = Executors.newSingleThreadExecutor()
         m_address = arguments?.getString("address")
+
 //        Log.d("infer",m_address?:"no address")
     }
     override fun onCreateView(
@@ -59,7 +70,10 @@ class cameraFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         setHasOptionsMenu(true)
-        return inflater.inflate(R.layout.fragment_camera, container, false)
+        _binding = FragmentCameraBinding.inflate(inflater, container, false)
+        val view = binding.root
+        return view
+//        return inflater.inflate(R.layout.fragment_camera, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -92,57 +106,60 @@ class cameraFragment : Fragment() {
                 requireActivity(), REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
         }
 
-        view.findViewById<Button>(R.id.camera_capture_button).setOnClickListener {
+
+        binding.camera680Button.setOnClickListener{
+            processCameraButton(binding.camera680Button,0)
+        }
+        binding.camera700Button.setOnClickListener{
+            processCameraButton(binding.camera700Button,1)
+        }
+        binding.camera730Button.setOnClickListener{
+            processCameraButton(binding.camera730Button,2)
+        }
+        binding.camera760Button.setOnClickListener{
+            processCameraButton(binding.camera760Button,3)
+        }
+        binding.camera780Button.setOnClickListener{
+            processCameraButton(binding.camera780Button,4)
+        }
+        binding.camera800Button.setOnClickListener{
+            processCameraButton(binding.camera800Button,5)
+        }
+        binding.camera830Button.setOnClickListener{
+            processCameraButton(binding.camera830Button,6)
+        }
+        binding.camera850Button.setOnClickListener{
+            processCameraButton(binding.camera850Button,7)
+        }
+
+        binding.cameraCaptureButton.setOnClickListener {
             takePhoto(stateWavelengthIndex)
         }
 
-        val btn680=view.findViewById<Button>(R.id.camera_680_button)
-        btn680.setOnClickListener {
-//            startCamera(cameraPreviewView,isoArray[0],speedArray[0])
-            processCameraButton(btn680,0)
+
+        binding.oneClickButton.setOnClickListener{
+            if(btControl.getConnectState())
+            {
+                for(i in 1..7)
+                {
+                    Toast.makeText(requireContext(),"Capture $i.",Toast.LENGTH_SHORT).show()
+                    btControl.sendCommand(i.toString())
+                    startCamera(cameraPreviewView,isoArray[i],speedArray[i])
+                    takePhoto(i)
+                    btControl.sendCommand("f")
+                }
+            }
+            else{
+                Toast.makeText(requireContext(),"One click require bluetooth connection.",Toast.LENGTH_SHORT).show()
+            }
+
+        }
+        binding.cameraApplenumButton.setOnClickListener{
+            stateAppleNum++
+            outputDirectory=MainActivity.getOutputDirectory(requireContext(),developer,stateWavelengthIndex)
         }
 
-        val btn700=view.findViewById<Button>(R.id.camera_700_button)
-        btn700.setOnClickListener {
-//            startCamera(cameraPreviewView,isoArray[1],speedArray[1])
-            processCameraButton(btn700,1)
-        }
-
-
-        val btn730=view.findViewById<Button>(R.id.camera_730_button)
-        btn730.setOnClickListener {
-//            startCamera(cameraPreviewView,isoArray[2],speedArray[2])
-            processCameraButton(btn730,2)
-        }
-
-        val btn760=view.findViewById<Button>(R.id.camera_760_button)
-        btn760.setOnClickListener {
-            processCameraButton(btn760,3)
-//            startCamera(cameraPreviewView,isoArray[3],speedArray[3])
-        }
-        val btn780=view.findViewById<Button>(R.id.camera_780_button)
-        btn780.setOnClickListener {
-            processCameraButton(btn780,4)
-//            startCamera(cameraPreviewView,isoArray[3],speedArray[3])
-        }
-        val btn800=view.findViewById<Button>(R.id.camera_800_button)
-        btn800.setOnClickListener {
-            processCameraButton(btn800,5)
-//            startCamera(cameraPreviewView,isoArray[3],speedArray[3])
-        }
-        val btn830=view.findViewById<Button>(R.id.camera_830_button)
-        btn830.setOnClickListener {
-            processCameraButton(btn830,6)
-//            startCamera(cameraPreviewView,isoArray[3],speedArray[3])
-        }
-
-        val btn850=view.findViewById<Button>(R.id.camera_850_button)
-        btn850.setOnClickListener {
-            processCameraButton(btn850,7)
-        }
-
-
-        view.findViewById<Button>(R.id.camera_back_button).setOnClickListener{
+        binding.cameraBackButton.setOnClickListener{
             Navigation.findNavController(it).navigateUp()
         }
     }
@@ -165,6 +182,23 @@ class cameraFragment : Fragment() {
 
             R.id.menu_bluetooth ->{
                 Navigation.findNavController(requireView()).navigate(R.id.action_cameraFragment_to_selectDeviceFragment)
+                true
+            }
+
+            R.id.menu_develpoer ->
+            {
+                developer=!developer
+                if(developer)
+                {
+                    Toast.makeText(requireContext(),"Developer mode.\nClick again to close.",Toast.LENGTH_SHORT).show()
+                    binding.cameraApplenumButton.visibility=View.VISIBLE
+                    binding.oneClickButton.visibility=View.VISIBLE
+                }
+                else{
+                    Toast.makeText(requireContext(),"Close developer mode.",Toast.LENGTH_SHORT).show()
+                    binding.cameraApplenumButton.visibility=View.GONE
+                    binding.oneClickButton.visibility=View.GONE
+                }
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -320,7 +354,6 @@ class cameraFragment : Fragment() {
                 override fun onError(exc: ImageCaptureException) {
                     Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
                 }
-
 
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     val savedUri = Uri.fromFile(photoFile)

@@ -38,12 +38,32 @@ class MainActivity : AppCompatActivity() {
     companion object {
 
         /** Use external media if it is available, our app's file directory otherwise */
-        fun getOutputDirectory(context: Context): File {
+        fun getOutputDirectory(context: Context,developer:Boolean=false,index:Int?=1): File {
             val appContext = context.applicationContext
-            val mediaDir = context.externalMediaDirs.firstOrNull()?.let {
-                File(it, appContext.resources.getString(R.string.app_name)).apply { mkdirs() } }
-            return if (mediaDir != null && mediaDir.exists())
-                mediaDir else appContext.filesDir
+            val appName=appContext.resources.getString(R.string.app_name)
+            val mediaDir = context.externalMediaDirs.firstOrNull()
+            var appleFile:File
+            var tmp:Int=0
+            if(developer)
+            {
+                appleFile=File(mediaDir, appName+"/"+index!!.toString())
+                while(appleFile.exists())
+                {
+                    tmp++
+                    appleFile=File(mediaDir, appName+"/"+(index+tmp).toString())
+
+                    println(appleFile)
+                }
+            }
+            else{
+                appleFile=File(mediaDir, appName)
+            }
+            appleFile.mkdirs()
+            return appleFile
+//            .let {
+//                File(it, index.toString()).apply { mkdirs() } }
+//            return if (mediaDir != null && mediaDir.exists())
+//                mediaDir else appContext.filesDir
         }
 
 

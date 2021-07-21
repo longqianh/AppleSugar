@@ -8,9 +8,14 @@
         android:id="@+id/menu_help"
         android:title="@string/menu_help_text" />
 
-        <item
-            android:id="@+id/menu_bluetooth"
-            android:title="@string/menu_bluetooth_text" />
+    <item
+        android:id="@+id/menu_bluetooth"
+        android:title="@string/menu_bluetooth_text" />
+
+    <item
+        android:id="@+id/menu_develpoer"
+        android:backgroundTint="@color/button_background_color"
+        android:title="@string/developer_text" />
 
 
 

@@ -68,6 +68,8 @@
     <string name="model_switch_text">Cla|Reg</string>
     <string name="bk_switch_text">Bk|Infer</string>
     <string name="button_730_text">730 nm</string>
+    <string name="developer_text">Developer mode</string>
+    <string name="apple_recorded_text">New Apple</string>
 
 
 </resources>
