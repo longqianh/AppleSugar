@@ -45,6 +45,7 @@ class cameraFragment : Fragment() {
     val isoArray=intArrayOf(100,200,500,1250,1250,4000,4000,6400)
     val speedArray= longArrayOf(3125000L,3125000L,4000000L,10000000L,20000000L,20000000L,50000000L,66666667L)
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         outputDirectory = MainActivity.getOutputDirectory(requireContext())
@@ -125,7 +126,7 @@ class cameraFragment : Fragment() {
 //            startCamera(cameraPreviewView,isoArray[3],speedArray[3])
         }
         val btn800=view.findViewById<Button>(R.id.camera_800_button)
-        btn780.setOnClickListener {
+        btn800.setOnClickListener {
             processCameraButton(btn800,5)
 //            startCamera(cameraPreviewView,isoArray[3],speedArray[3])
         }
@@ -350,4 +351,5 @@ class cameraFragment : Fragment() {
 
 }
 
-// todo: manual tape to focus
+// todo: integrate processing precedure
+// todo: data binding
