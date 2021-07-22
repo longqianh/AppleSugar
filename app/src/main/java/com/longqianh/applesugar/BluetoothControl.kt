@@ -7,6 +7,9 @@ import android.bluetooth.BluetoothSocket
 import android.content.Context
 import android.os.AsyncTask
 import android.util.Log
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import java.io.IOException
 import java.util.*
 
@@ -21,10 +24,13 @@ class BluetoothControl {
         var m_address: String?=null
     }
 
-    fun sendCommand(input: String) {
+    suspend fun sendCommand(input: String)= withContext(Dispatchers.IO)
+    {
         if (m_bluetoothSocket != null) {
             try{
                 m_bluetoothSocket!!.outputStream.write(input.toByteArray())
+//                delay(1000)
+
             } catch(e: IOException) {
                 e.printStackTrace()
             }

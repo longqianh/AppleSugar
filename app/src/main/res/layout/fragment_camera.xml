@@ -57,10 +57,10 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="32dp"
             android:text="@string/apple_drop_text"
-        app:layout_constraintBottom_toTopOf="@+id/camera_capture_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-        <!--            android:visibility="gone"-->
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/camera_capture_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
 
         <Button
@@ -68,11 +68,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
+            android:visibility="gone"
             android:text="@string/apple_recorded_text"
             app:layout_constraintBottom_toTopOf="@+id/camera_dropApple_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
-        <!--            android:visibility="gone"-->
 
 
         <Button
@@ -190,15 +190,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:text="Apple Num"
+            android:text="@string/apple_num_text"
             android:textColor="@color/white"
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/camera_newApple_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
-        <!--            android:visibility="gone"-->
 
         <TextView
-            android:id="@+id/intensityView"
+            android:id="@+id/intensity_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"

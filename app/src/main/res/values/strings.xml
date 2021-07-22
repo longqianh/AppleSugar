@@ -71,6 +71,7 @@
     <string name="developer_text">Developer mode</string>
     <string name="apple_recorded_text">New Apple</string>
     <string name="apple_drop_text">Drop Apple</string>
+    <string name="apple_num_text">Apple Num: %1d</string>
 
 
 </resources>
