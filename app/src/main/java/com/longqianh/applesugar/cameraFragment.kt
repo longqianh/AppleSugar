@@ -168,44 +168,42 @@ class cameraFragment : Fragment() {
         }
 
 
-        binding.oneClickButton.setOnClickListener{
-//            if(btControl.getConnectState())
-//            {
+        binding.oneClickButton.setOnClickListener {
+            if (btControl.getConnectState()) {
+                CoroutineScope(Dispatchers.Main).launch {
+                    for (i in 0..7) {
+                        async {
+                            btControl.sendCommand(i.toString())
+                            println("Test: in btcontrol $i")
+                        }
+                        async {
+                            startCamera(cameraPreviewView, isoArray[i], speedArray[i])
+                            println("Test: in start camera $i")
+                        }
+                        delay(600)
+                        println("Test: before take photo $i")
+                        takePhoto(i)
+                        println("Test: after take photo $i")
+                        delay(600)
+                    }
+                    //                while(!photoTaken){}
+//                    delay(500)
+//                    for (i in 0..7) {
+//                        Toast.makeText(requireContext(),"Intensity ${waveLength[i]}: ${inputFeatures[i]}",Toast.LENGTH_SHORT).show()
+//                    }
+                }
 
-            CoroutineScope(Dispatchers.Default).launch {
-                for(i in 0..7){
-//                        Toast.makeText(requireContext(), "Capture $i.", Toast.LENGTH_SHORT).show()
-                    Log.d("runBlocking", "inside coroutine $i")
-                    //    async {
-                    //      btControl.sendCommand(i.toString())
-//                            delay(1000)
-                    //    }
-//                        async {
-                    startCamera(cameraPreviewView, isoArray[i], speedArray[i])
-                    delay(50)
-                    takePhoto(i)
-                    delay(600)
-                }
-//                while(!photoTaken){}
-                delay(1000)
-                for(i in 0..7)
-                {
-                    println("test: ${inputFeatures[i]}")
-                }
+
             }
-
-
-
-
+//            binding.appleNumText.text = "Apple Num: $stateAppleNum"
+            else {
+                Toast.makeText(
+                    requireContext(),
+                    "One click require bluetooth connection.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
-
-
-//                    binding.appleNumText.text = "Apple Num: $stateAppleNum"
-
-//            }
-//            else{
-//                Toast.makeText(requireContext(),"One click require bluetooth connection.",Toast.LENGTH_SHORT).show()
-//            }
 
         binding.cameraNewAppleButton.setOnClickListener{
             stateAppleNum++
