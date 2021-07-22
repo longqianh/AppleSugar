@@ -1,11 +1,11 @@
 package com.longqianh.applesugar
 
 import android.content.pm.PackageManager
-import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraMetadata
 import android.hardware.camera2.CaptureRequest
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.util.Size
 import android.view.*
@@ -20,16 +20,13 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.navigation.Navigation
-import com.google.common.util.concurrent.ListenableFuture
 import com.longqianh.applesugar.databinding.FragmentCameraBinding
-import com.longqianh.applesugar.databinding.InferFragmentBinding
 import com.longqianh.applesugar.view.CameraXPreviewViewTouchListener
 import java.io.File
-import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
+import kotlin.concurrent.schedule
 
 class cameraFragment : Fragment() {
     private var imageCapture: ImageCapture? = null
@@ -42,8 +39,7 @@ class cameraFragment : Fragment() {
     private var m_address:String?=null
     private var stateWavelengthIndex=0
     private var developer=false
-
-    private var stateAppleNum=0
+    private var cameraOpened=false
 
     private var _binding: FragmentCameraBinding? = null
     // This property is only valid between onCreateView and
@@ -52,8 +48,8 @@ class cameraFragment : Fragment() {
 
 
 //    680, 700, 730, 760, 780, 800, 830, 850
-    val isoArray=intArrayOf(100,200,500,1250,4000,4000,6400,6400)
-    val speedArray= longArrayOf(3125000L,3125000L,10000000L,20000000L,20000000L,50000000L,50000000L,66666667L)
+    val isoArray=intArrayOf(100,200,500,1250,1250,4000,6400,6400)
+    val speedArray= longArrayOf(1562500L,1562500L,4000000L,10000000L,20000000L,20000000L,20000000L,66666667L)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,12 +63,11 @@ class cameraFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         setHasOptionsMenu(true)
         _binding = FragmentCameraBinding.inflate(inflater, container, false)
-        val view = binding.root
-        return view
+        return binding.root
 //        return inflater.inflate(R.layout.fragment_camera, container, false)
     }
 
@@ -95,6 +90,20 @@ class cameraFragment : Fragment() {
         }
 
 
+        val appContext = requireContext().applicationContext
+        val appName=appContext.resources.getString(R.string.app_name)
+        val mediaDir = requireActivity().externalMediaDirs.firstOrNull()
+        var appleFile:File
+        appleFile=File(mediaDir, "$appName/$stateAppleNum")
+        while(appleFile.exists())
+        {
+            stateAppleNum++
+            appleFile=File(mediaDir, appName+"/"+ stateAppleNum.toString())
+        }
+
+        stateAppleNum--
+        binding.appleNumText.text="Apple Num: $stateAppleNum"
+
         cameraPreviewView=view.findViewById(R.id.cameraPreview)
         // Request camera permissions
         if (allPermissionsGranted()) {
@@ -109,6 +118,7 @@ class cameraFragment : Fragment() {
 
         binding.camera680Button.setOnClickListener{
             processCameraButton(binding.camera680Button,0)
+
         }
         binding.camera700Button.setOnClickListener{
             processCameraButton(binding.camera700Button,1)
@@ -140,23 +150,132 @@ class cameraFragment : Fragment() {
         binding.oneClickButton.setOnClickListener{
             if(btControl.getConnectState())
             {
-                for(i in 1..7)
-                {
-                    Toast.makeText(requireContext(),"Capture $i.",Toast.LENGTH_SHORT).show()
-                    btControl.sendCommand(i.toString())
-                    startCamera(cameraPreviewView,isoArray[i],speedArray[i])
-                    takePhoto(i)
-                    btControl.sendCommand("f")
-                }
+                val handler=Handler()
+                handler.postDelayed(
+                    {processCameraButton(binding.camera680Button,0)}
+                ,1000)
+                handler.postDelayed(
+                    {processCameraButton(binding.camera700Button,1)}
+                    ,1000)
+                handler.postDelayed(
+                    {processCameraButton(binding.camera730Button,2)}
+                    ,1000)
+                handler.postDelayed(
+                    {processCameraButton(binding.camera760Button,3)}
+                    ,1000)
+                handler.postDelayed(
+                    {processCameraButton(binding.camera780Button,4)}
+                    ,1000)
+                handler.postDelayed(
+                    {processCameraButton(binding.camera800Button,5)}
+                    ,1000)
+                handler.postDelayed(
+                    {processCameraButton(binding.camera830Button,6)}
+                    ,1000)
+                handler.postDelayed(
+                    {processCameraButton(binding.camera850Button,7)}
+                    ,1000)
+
+//                for(i in 0..7)
+//                {
+//                    btControl.sendCommand("f")
+//                    Toast.makeText(requireContext(),"Capture $i.",Toast.LENGTH_SHORT).show()
+//                    var onSended=false
+//                    var offSended=false
+//                    var cameraOpened=false
+//                    var photoTaken=false
+//                    while(!onSended)
+//                    {
+//                    btControl.sendCommand(i.toString())
+//                    when(i)
+//                    {
+//                        0->{
+//                            handler.postDelayed(
+//                                {processCameraButton(binding.camera680Button,i)}
+//                            ,3000)
+//                        }
+//                        1->{
+//                            handler.postDelayed(
+//                                {processCameraButton(binding.camera700Button,i)}
+//                                ,3000)
+//                        }
+//                        2->{
+//                            handler.postDelayed(
+//                                {processCameraButton(binding.camera730Button,i)}
+//                                ,3000)
+//                        }
+//                        3->{
+//                            handler.postDelayed(
+//                                {processCameraButton(binding.camera760Button,i)}
+//                                ,3000)
+//                        }
+//                        4->{
+//                            handler.postDelayed(
+//                                {processCameraButton(binding.camera780Button,i)}
+//                                ,3000)
+//                        }
+//                        5->{
+//                            handler.postDelayed(
+//                                {processCameraButton(binding.camera800Button,i)}
+//                                ,3000)
+//                        }
+//                        6-> {
+//                            handler.postDelayed(
+//                                {processCameraButton(binding.camera830Button,i)}
+//                                ,3000)
+//                        }
+//                        7-> {
+//                            handler.postDelayed(
+//                                {processCameraButton(binding.camera850Button,i)}
+//                                ,3000)
+//                        }
+
+//                    }
+//                    Log.i("Bluetooth","$i:on")
+
+//                    while(!cameraOpened)
+//                    {
+//                        cameraOpened=startCamera(cameraPreviewView,isoArray[i],speedArray[i])
+//                    }
+//                    Log.i("Bluetooth","Camera Opened")
+//
+//                    while(!photoTaken)
+//                    {
+//                        photoTaken=takePhoto(i)
+//                    }
+//                    Log.i("Bluetooth","Photo taken")
+
+
+//                    Timer().schedule(1000) {
+//                    while(!offSended)
+//                    {
+//                        offSended=btControl.sendCommand("f")
+//                    }
+//                    Log.i("Bluetooth","$i:off")
+//                    }
+//                    yield(i)
+//                    binding.appleNumText.text = "Apple Num: $stateAppleNum"
+//                    Timer().schedule(5000) {
+//                        Log.i("Bluetooth","$i")
+//                    }
+
+//                }
             }
             else{
                 Toast.makeText(requireContext(),"One click require bluetooth connection.",Toast.LENGTH_SHORT).show()
             }
 
         }
-        binding.cameraApplenumButton.setOnClickListener{
+        binding.cameraNewAppleButton.setOnClickListener{
             stateAppleNum++
-            outputDirectory=MainActivity.getOutputDirectory(requireContext(),developer,stateWavelengthIndex)
+            outputDirectory=MainActivity.getOutputDirectory(requireContext(),developer,stateAppleNum)
+            binding.appleNumText.text = "Apple Num: $stateAppleNum"
+        }
+
+        binding.cameraDropAppleButton.setOnClickListener{
+            stateAppleNum--
+            outputDirectory=MainActivity.getOutputDirectory(requireContext(),developer,stateAppleNum)
+            binding.appleNumText.text = "Apple Num: $stateAppleNum"
         }
 
         binding.cameraBackButton.setOnClickListener{
@@ -191,13 +310,18 @@ class cameraFragment : Fragment() {
                 if(developer)
                 {
                     Toast.makeText(requireContext(),"Developer mode.\nClick again to close.",Toast.LENGTH_SHORT).show()
-                    binding.cameraApplenumButton.visibility=View.VISIBLE
+                    binding.cameraNewAppleButton.visibility=View.VISIBLE
                     binding.oneClickButton.visibility=View.VISIBLE
+                    binding.appleNumText.visibility=View.VISIBLE
+                    binding.appleNumText.text = "Apple Num: $stateAppleNum"
+                    outputDirectory=MainActivity.getOutputDirectory(requireContext(),developer,stateAppleNum)
                 }
                 else{
                     Toast.makeText(requireContext(),"Close developer mode.",Toast.LENGTH_SHORT).show()
-                    binding.cameraApplenumButton.visibility=View.GONE
+                    binding.cameraNewAppleButton.visibility=View.GONE
                     binding.oneClickButton.visibility=View.GONE
+                    binding.appleNumText.visibility=View.GONE
+                    outputDirectory=MainActivity.getOutputDirectory(requireContext(),developer,stateAppleNum)
                 }
                 true
             }
@@ -218,6 +342,32 @@ class cameraFragment : Fragment() {
         {
             btControl.sendCommand(index.toString())
             startCamera(cameraPreviewView,isoArray[index],speedArray[index])
+//            if(!cameraOpened)
+//            {
+//                startCamera(cameraPreviewView,isoArray[index],speedArray[index])
+//            }
+//            else{
+//                val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
+//                val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
+//                val imageCaptureBuilder = ImageCapture.Builder()
+//                cameraProvider.unbind(imageCapture)
+//                imageCaptureBuilder.setTargetResolution(Size(640, 480))
+//                Camera2Interop.Extender(imageCaptureBuilder)
+////                .setCaptureRequestOption(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_OFF)
+//                    .setCaptureRequestOption(CaptureRequest.CONTROL_AF_MODE,CameraMetadata.CONTROL_AF_MODE_OFF)
+//                    .setCaptureRequestOption(CaptureRequest.CONTROL_AF_TRIGGER, CameraMetadata.CONTROL_AF_TRIGGER_START)
+//                    .setCaptureRequestOption(CaptureRequest.LENS_FOCUS_DISTANCE, 25.0F) // mm
+//                    .setCaptureRequestOption(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION, 0)
+//                    .setCaptureRequestOption(CaptureRequest.CONTROL_AWB_MODE, CameraMetadata.CONTROL_AWB_MODE_DAYLIGHT) // turn off auto white balance
+//                    .setCaptureRequestOption(CaptureRequest.CONTROL_AWB_LOCK, true)
+//                    .setCaptureRequestOption(CaptureRequest.CONTROL_AE_MODE, CameraMetadata.CONTROL_AE_MODE_OFF) // turn off auto-exposure
+//                    .setCaptureRequestOption(CaptureRequest.SENSOR_EXPOSURE_TIME, speedArray[index])
+//                    .setCaptureRequestOption(CaptureRequest.SENSOR_SENSITIVITY,isoArray[index])
+//
+//                imageCapture = imageCaptureBuilder.build()
+//                cameraProvider.bindToLifecycle(
+//                    this,CameraSelector.DEFAULT_BACK_CAMERA, imageCapture)
+//            }
         }
         else{
             btControl.sendCommand("f")
@@ -276,7 +426,7 @@ class cameraFragment : Fragment() {
 
         }, ContextCompat.getMainExecutor(requireContext()))
 
-
+//        cameraOpened=true
     }
 
     // 相机点击等相关操作监听
@@ -335,7 +485,7 @@ class cameraFragment : Fragment() {
 
     }
 
-    private fun takePhoto(index:Int) {
+    private fun takePhoto(index:Int){
         // Get a stable reference of the modifiable image capture use case
         val imageCapture = imageCapture ?: return
 
@@ -379,6 +529,9 @@ class cameraFragment : Fragment() {
 //            File(baseFolder, SimpleDateFormat(format, Locale.US)
 //                .format(System.currentTimeMillis()) + extension)
             File(baseFolder,name+extension)
+
+        var stateAppleNum=0
+
     }
 
 

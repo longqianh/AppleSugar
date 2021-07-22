@@ -43,22 +43,28 @@ class MainActivity : AppCompatActivity() {
             val appName=appContext.resources.getString(R.string.app_name)
             val mediaDir = context.externalMediaDirs.firstOrNull()
             var appleFile:File
-            var tmp:Int=0
+//            var tmp:Int=0
             if(developer)
             {
                 appleFile=File(mediaDir, appName+"/"+index!!.toString())
-                while(appleFile.exists())
-                {
-                    tmp++
-                    appleFile=File(mediaDir, appName+"/"+(index+tmp).toString())
-
-                    println(appleFile)
-                }
+//                while(appleFile.exists())
+//                {
+//                    tmp++
+//                    appleFile=File(mediaDir, appName+"/"+(index+tmp).toString())
+//
+//                    println(appleFile)
+//                }
             }
             else{
                 appleFile=File(mediaDir, appName)
             }
-            appleFile.mkdirs()
+            if(!appleFile.exists())
+            {
+                appleFile.mkdirs()
+            }
+
+//            cameraFragment.stateAppleNum=tmp+index!!
+
             return appleFile
 //            .let {
 //                File(it, index.toString()).apply { mkdirs() } }

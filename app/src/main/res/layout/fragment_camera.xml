@@ -46,29 +46,34 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0">
 
-            <Button
-                android:id="@+id/one_click_button"
-                android:layout_width="wrap_content"
-                android:text="One Click Capture"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:layout_gravity="center_horizontal|top"/>
-                <!--            android:visibility="gone"-->
+
 
         </androidx.camera.view.PreviewView>
 
 
-
         <Button
-            android:id="@+id/camera_applenum_button"
+            android:id="@+id/camera_dropApple_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="32dp"
+            android:text="@string/apple_drop_text"
+        app:layout_constraintBottom_toTopOf="@+id/camera_capture_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+        <!--            android:visibility="gone"-->
+
+
+        <Button
+            android:id="@+id/camera_newApple_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:text="@string/apple_recorded_text"
-            android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@+id/camera_capture_button"
+            app:layout_constraintBottom_toTopOf="@+id/camera_dropApple_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+        <!--            android:visibility="gone"-->
+
 
         <Button
             android:id="@+id/camera_680_button"
@@ -160,14 +165,47 @@
 
         <ImageView
             android:id="@+id/focusRing"
-            android:layout_width="232dp"
-            android:layout_height="207dp"
+            android:layout_width="250dp"
+            android:layout_height="227dp"
             android:layout_gravity="center_horizontal|center_vertical"
             android:src="@drawable/focus_ring"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/cameraPreview"
             app:layout_constraintTop_toTopOf="parent" />
+
+
+        <Button
+            android:id="@+id/one_click_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="One Click Capture"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/appleNumText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="Apple Num"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toTopOf="@+id/camera_newApple_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+        <!--            android:visibility="gone"-->
+
+        <TextView
+            android:id="@+id/intensityView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/one_click_button" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
     <!--        android:visibility="invisible"-->

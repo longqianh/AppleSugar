@@ -70,6 +70,7 @@
     <string name="button_730_text">730 nm</string>
     <string name="developer_text">Developer mode</string>
     <string name="apple_recorded_text">New Apple</string>
+    <string name="apple_drop_text">Drop Apple</string>
 
 
 </resources>

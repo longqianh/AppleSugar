@@ -169,7 +169,7 @@ class inferFragment: Fragment(), View.OnClickListener {
                 ).show()
                 val sugar = calSugar(viewModel.features)
                 binding.sugarText.visibility = View.VISIBLE
-                binding.sugarText.setText("Apple sugar: $sugar Brix")
+                binding.sugarText.text = "Apple sugar: $sugar Brix"
 
             }
 
