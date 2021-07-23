@@ -23,6 +23,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
 import com.longqianh.applesugar.databinding.FragmentCameraBinding
@@ -53,7 +54,7 @@ class cameraFragment : Fragment() {
     private var stateIntensity=0.0
     private lateinit var contentResolver: ContentResolver
     private lateinit var am: AssetManager
-    private var inputFeatures = DoubleArray(8) { _ -> 0.0 }
+
     private var bk = DoubleArray(8) { _ -> 0.0 }
     private var isSelected=BooleanArray(8){_->false}
 
@@ -62,7 +63,7 @@ class cameraFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
     private lateinit var btnArray: Array<Button>
-
+    private lateinit var viewModel: CameraViewModel
 
 
     //    680, 700, 730, 760, 780, 800, 830, 850
@@ -76,7 +77,6 @@ class cameraFragment : Fragment() {
         cameraExecutor = Executors.newSingleThreadExecutor()
         m_address = arguments?.getString("address")
 
-
 //        Log.d("infer",m_address?:"no address")
     }
     override fun onCreateView(
@@ -85,6 +85,7 @@ class cameraFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         setHasOptionsMenu(true)
+        viewModel=ViewModelProviders.of(this).get(CameraViewModel::class.java)
         _binding = FragmentCameraBinding.inflate(inflater, container, false)
         return binding.root
 //        return inflater.inflate(R.layout.fragment_camera, container, false)
@@ -149,34 +150,9 @@ class cameraFragment : Fragment() {
                 processCameraButton(btnArray[i],i)
             }
         }
-//        binding.camera680Button.setOnClickListener{
-//
-//        }
-//        binding.camera700Button.setOnClickListener{
-//            processCameraButton(binding.camera700Button,1)
-//        }
-//        binding.camera730Button.setOnClickListener{
-//            processCameraButton(binding.camera730Button,2)
-//        }
-//        binding.camera760Button.setOnClickListener{
-//            processCameraButton(binding.camera760Button,3)
-//        }
-//        binding.camera780Button.setOnClickListener{
-//            processCameraButton(binding.camera780Button,4)
-//        }
-//        binding.camera800Button.setOnClickListener{
-//            processCameraButton(binding.camera800Button,5)
-//        }
-//        binding.camera830Button.setOnClickListener{
-//            processCameraButton(binding.camera830Button,6)
-//        }
-//        binding.camera850Button.setOnClickListener{
-//            processCameraButton(binding.camera850Button,7)
-//        }
 
         binding.cameraCaptureButton.setOnClickListener {
             takePhoto(stateWavelengthIndex)
-
         }
 
 
@@ -202,11 +178,7 @@ class cameraFragment : Fragment() {
                         delay(600)
 
                     }
-                    //                while(!photoTaken){}
-//                    delay(500)
-//                    for (i in 0..7) {
-//                        Toast.makeText(requireContext(),"Intensity ${waveLength[i]}: ${inputFeatures[i]}",Toast.LENGTH_SHORT).show()
-//                    }
+
                 }
 
 
@@ -233,9 +205,9 @@ class cameraFragment : Fragment() {
             binding.appleNumText.text = "Apple Num: $stateAppleNum"
         }
 
-        binding.cameraBackButton.setOnClickListener{
-            Navigation.findNavController(it).navigateUp()
-        }
+//        binding.cameraBackButton.setOnClickListener{
+//            Navigation.findNavController(it).navigateUp()
+//        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -492,8 +464,8 @@ class cameraFragment : Fragment() {
 //                    val intensity=Utils.getIntensityFromPath(path,am)
                     CoroutineScope(Dispatchers.Main).launch {
                         val intensity=Utils.getIntensityFromUri(savedUri,contentResolver)
-                        inputFeatures[index]=intensity
                         binding.intensityText.text="Intensity: "+"%.2f".format(intensity)
+                        viewModel.inputFeatures[index]=intensity-bk[index]
                     }
 
                 }
@@ -523,5 +495,3 @@ class cameraFragment : Fragment() {
 
 }
 
-// todo: integrate processing precedure
-// todo: data binding
