@@ -180,11 +180,15 @@ class cameraFragment : Fragment() {
                             startCamera(cameraPreviewView, isoArray[i], speedArray[i])
                             println("Test: in start camera $i")
                         }
-                        delay(600)
+                        delay(2000)
                         println("Test: before take photo $i")
-                        takePhoto(i)
+                        CoroutineScope(Dispatchers.Main).launch {
+                            withContext(Dispatchers.Default){ takePhoto(i) }
+                            btControl.sendCommand("f")
+                        }
                         println("Test: after take photo $i")
                         delay(600)
+
                     }
                     //                while(!photoTaken){}
 //                    delay(500)
@@ -250,6 +254,7 @@ class cameraFragment : Fragment() {
                 {
                     Toast.makeText(requireContext(),"Developer mode.\nClick again to close.",Toast.LENGTH_SHORT).show()
                     binding.cameraNewAppleButton.visibility=View.VISIBLE
+                    binding.cameraDropAppleButton.visibility=View.VISIBLE
                     binding.oneClickButton.visibility=View.VISIBLE
                     binding.appleNumText.visibility=View.VISIBLE
                     binding.appleNumText.text = "Apple Num: $stateAppleNum"
@@ -258,6 +263,7 @@ class cameraFragment : Fragment() {
                 else{
                     Toast.makeText(requireContext(),"Close developer mode.",Toast.LENGTH_SHORT).show()
                     binding.cameraNewAppleButton.visibility=View.GONE
+                    binding.cameraDropAppleButton.visibility=View.GONE
                     binding.oneClickButton.visibility=View.GONE
                     binding.appleNumText.visibility=View.GONE
                     outputDirectory=MainActivity.getOutputDirectory(requireContext(),developer,stateAppleNum)
@@ -276,6 +282,9 @@ class cameraFragment : Fragment() {
 
     private fun processCameraButton(btn:Button,index:Int)
     {
+        CoroutineScope(Dispatchers.IO).launch{
+            btControl.sendCommand("f")
+        }
         btn.isSelected=!btn.isSelected
         isSelected[index]=btn.isSelected
         for(i in 0..7)
@@ -338,12 +347,7 @@ class cameraFragment : Fragment() {
 //                    this,CameraSelector.DEFAULT_BACK_CAMERA, imageCapture)
 //            }
         }
-        else{
-            CoroutineScope(Dispatchers.IO).launch{
-                btControl.sendCommand("f")
-            }
 
-        }
         stateWavelengthIndex=index
 
     }
@@ -479,12 +483,7 @@ class cameraFragment : Fragment() {
 
                 @RequiresApi(Build.VERSION_CODES.P)
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                    if(btControl.getConnectState())
-                    {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            btControl.sendCommand("f")
-                        }
-                    }
+
                     val savedUri = Uri.fromFile(photoFile)
                     val msg = "Photo capture succeeded: $savedUri"
                     Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
