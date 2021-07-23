@@ -61,9 +61,11 @@ class cameraFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+    private lateinit var btnArray: Array<Button>
 
 
-//    680, 700, 730, 760, 780, 800, 830, 850
+
+    //    680, 700, 730, 760, 780, 800, 830, 850
     private val isoArray=intArrayOf(100,200,500,1250,1250,4000,6400,6400)
     private val speedArray= longArrayOf(1562500L,1562500L,4000000L,10000000L,20000000L,20000000L,20000000L,66666667L)
     private val waveLength= intArrayOf(680,700,730,760,780,800,830,850)
@@ -136,31 +138,41 @@ class cameraFragment : Fragment() {
         }
 
 
-        binding.camera680Button.setOnClickListener{
-            processCameraButton(binding.camera680Button,0)
+        btnArray= arrayOf(binding.camera680Button,binding.camera700Button,
+            binding.camera730Button,binding.camera760Button,
+            binding.camera780Button,binding.camera800Button,
+            binding.camera830Button,binding.camera850Button)
 
+        for(i in 0..7)
+        {
+            btnArray[i].setOnClickListener{
+                processCameraButton(btnArray[i],i)
+            }
         }
-        binding.camera700Button.setOnClickListener{
-            processCameraButton(binding.camera700Button,1)
-        }
-        binding.camera730Button.setOnClickListener{
-            processCameraButton(binding.camera730Button,2)
-        }
-        binding.camera760Button.setOnClickListener{
-            processCameraButton(binding.camera760Button,3)
-        }
-        binding.camera780Button.setOnClickListener{
-            processCameraButton(binding.camera780Button,4)
-        }
-        binding.camera800Button.setOnClickListener{
-            processCameraButton(binding.camera800Button,5)
-        }
-        binding.camera830Button.setOnClickListener{
-            processCameraButton(binding.camera830Button,6)
-        }
-        binding.camera850Button.setOnClickListener{
-            processCameraButton(binding.camera850Button,7)
-        }
+//        binding.camera680Button.setOnClickListener{
+//
+//        }
+//        binding.camera700Button.setOnClickListener{
+//            processCameraButton(binding.camera700Button,1)
+//        }
+//        binding.camera730Button.setOnClickListener{
+//            processCameraButton(binding.camera730Button,2)
+//        }
+//        binding.camera760Button.setOnClickListener{
+//            processCameraButton(binding.camera760Button,3)
+//        }
+//        binding.camera780Button.setOnClickListener{
+//            processCameraButton(binding.camera780Button,4)
+//        }
+//        binding.camera800Button.setOnClickListener{
+//            processCameraButton(binding.camera800Button,5)
+//        }
+//        binding.camera830Button.setOnClickListener{
+//            processCameraButton(binding.camera830Button,6)
+//        }
+//        binding.camera850Button.setOnClickListener{
+//            processCameraButton(binding.camera850Button,7)
+//        }
 
         binding.cameraCaptureButton.setOnClickListener {
             takePhoto(stateWavelengthIndex)
@@ -286,7 +298,6 @@ class cameraFragment : Fragment() {
             btControl.sendCommand("f")
         }
         btn.isSelected=!btn.isSelected
-        isSelected[index]=btn.isSelected
         for(i in 0..7)
         {
             if(i==index)
@@ -294,23 +305,11 @@ class cameraFragment : Fragment() {
                 continue
             }
 
-            if(isSelected[i])
+            if(btnArray[i].isSelected)
             {
-                when(i)
-                {
-                    0->{binding.camera680Button.isSelected=false}
-                    1->{binding.camera700Button.isSelected=false}
-                    2->{binding.camera730Button.isSelected=false}
-                    3->{binding.camera760Button.isSelected=false}
-                    4->{binding.camera780Button.isSelected=false}
-                    5->{binding.camera800Button.isSelected=false}
-                    6->{binding.camera830Button.isSelected=false}
-                    7->{binding.camera850Button.isSelected=false}
-
-                }
+                btnArray[i].isSelected=false
                 isSelected[i]=false
             }
-
 
         }
         if (btn.isSelected)
