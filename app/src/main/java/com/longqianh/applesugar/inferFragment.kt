@@ -112,7 +112,7 @@ class inferFragment: Fragment(), View.OnClickListener {
         binding.pickButton.setOnClickListener(this)
 //        binding.lightControlSwitch.setOnClickListener(this)
         binding.getSugarButton.setOnClickListener(this)
-        binding.modelSwitch.setOnClickListener(this)
+        binding.inferModelSwitch.setOnClickListener(this)
 //        binding.bkSwitch.setOnClickListener(this)
 
 
@@ -166,7 +166,7 @@ class inferFragment: Fragment(), View.OnClickListener {
                     Toast.LENGTH_LONG
                 ).show()
                 CoroutineScope(Dispatchers.Main).launch {
-                    val sugar = Utils.calSugar(viewModel.features,binding.modelSwitch.isChecked,am)
+                    val sugar = Utils.calSugar(viewModel.features,binding.inferModelSwitch.isChecked,am)
                     binding.sugarText.visibility = View.VISIBLE
                     binding.sugarText.text = "Apple sugar: $sugar Brix"
                 }
@@ -182,7 +182,7 @@ class inferFragment: Fragment(), View.OnClickListener {
             }
 
             R.id.model_switch -> {
-                if(binding.modelSwitch.isChecked)
+                if(binding.inferModelSwitch.isChecked)
                 {
                     Toast.makeText(requireContext(),"Change to Regresion Model.",Toast.LENGTH_SHORT).show()
                 }

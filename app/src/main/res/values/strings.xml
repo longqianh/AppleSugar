@@ -1,23 +1,24 @@
 <resources>
-    <string name="app_name">AppleSugar</string>
+    <string name="app_name">AiSugar</string>
     <string name="about_text">
         This app is designed for apple sugar inference.
         Select wavelength and capture images, after capturing
         images at each wavelength, click inference
         to get sugar content prediction.
-        \n\nAuthor: Longqian Huang</string>
-    <string name="help_text">
-        Follow the following steps to obtain the apple sugar content.\n\n
-<!--        1. Click the menu and choose the Bluetooth to connect the device.\n-->
-<!--        2. Press 'Capture' button to open camera. Choose the corresponding\n-->
-<!--        wavelength button to set camera parameters. \n-->
-<!--        3. After obtaining 7 images, press 'Pick' button to set intensity data.\n-->
-<!--        Switch 'bk|infer' to set background intensity or feature intensity,\n-->
-<!--        4. Use Cla|Reg switch to change deep learning models, switch left to use classification-->
-<!--        model, right to use regression model.\n-->
-<!--        5. After setting all background and feature intensities, \n-->
-<!--        oress 'Get Sugar' button to get predicted sugar content.-->
+        \n\nAuthor: Longqian Huang
     </string>
+
+    <string name="help_text">
+        Please connect Bluetooth first for LED control. \n\n
+        Developer mode: for data acquisition.\n\n
+        In developer mode: \n
+        \t\t Use \"New Apple\" to create a new data file for saving, if the file exists, it will do nothing.\n
+        \t\t Use \"Drop Apple\" to back one file.
+
+        \n\n
+        超级无敌苹果队\n 鲍宇涵, 曹雯, 黄隆钤\n 浙江大学
+    </string>
+
     <string name="text_wl_680">680 nm</string>
     <string name="text_wl_700">700 nm</string>
     <string name="text_wl_720">720 nm</string>
@@ -71,7 +72,10 @@
     <string name="developer_text">Developer mode</string>
     <string name="apple_recorded_text">New Apple</string>
     <string name="apple_drop_text">Drop Apple</string>
-    <string name="apple_num_text">Apple Num: %1d</string>
+    <string name="apple_num_text">Apple Num: %1$d</string>
+    <string name="one_click_capture_text">One Click Capture</string>
+    <string name="sugar_text">Sugar: %.1f Brix</string>
+    <string name="intensity_text">Intensity: %.2$f</string>
 
 
 </resources>

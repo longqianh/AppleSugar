@@ -47,26 +47,27 @@ class Utils {
             val inputs: Array<FloatArray> = arrayOf(sequence.map { it.toFloat() }.toFloatArray())
             if(modelSwitch)
             {
-                val modelPath="model_reg6.tflite"
+                val modelPath="model_reg.tflite"
                 val interpreter = Interpreter(loadModelFile(modelPath,am)!!)
                 val output: Array<FloatArray> = arrayOf(FloatArray(1))
                 interpreter.run(inputs, output)
                 return@withContext output[0][0]
             }
             else{
-                val modelPath1="model_cla_test.tflite"
-                val modelPath2="model_cla1.tflite"
+                val modelPath1="model_cla.tflite"
+//                val modelPath2="model_cla1.tflite"
                 val interpreter1 = Interpreter(loadModelFile(modelPath1,am)!!)
-                val interpreter2 = Interpreter(loadModelFile(modelPath2,am)!!)
-                val output: Array<FloatArray> = arrayOf(FloatArray(101))
+//                val interpreter2 = Interpreter(loadModelFile(modelPath2,am)!!)
+                val output: Array<FloatArray> = arrayOf(FloatArray(91))
 //            Toast.makeText(requireContext(),"Result: $maxIdx,${output[0][maxIdx]}",Toast.LENGTH_SHORT).show()
                 interpreter1.run(inputs, output)
                 val maxIdx1 = output[0].indices.maxByOrNull { output[0][it] } ?: 0
-                interpreter2.run(inputs, output)
-                val maxIdx2 = output[0].indices.maxByOrNull { output[0][it] } ?: 0
+//                interpreter2.run(inputs, output)
+//                val maxIdx2 = output[0].indices.maxByOrNull { output[0][it] } ?: 0
 //            Toast.makeText(requireContext(),"model1: ${8.0+maxIdx1*0.1}, model2: ${8.0+maxIdx2*0.1}",
 //                Toast.LENGTH_LONG).show()
-                return@withContext (8.0 + (maxIdx1+maxIdx2)*0.5 * 0.1).toFloat()
+//                return@withContext (8.0 + (maxIdx1+maxIdx2)*0.5 * 0.1).toFloat()
+                return@withContext (9.0+maxIdx1*0.1).toFloat()
             }
 
         }
@@ -105,25 +106,28 @@ class Utils {
             val sz: Size = Size(640.0, 480.0)
             Imgproc.resize(mat, mat, sz)
 //        image_origin.setImageBitmap(mat.toBitmap())
-            val binary = Mat()
-            Imgproc.threshold(mat, mat, 200.0, 255.0, Imgproc.THRESH_TOZERO_INV)
-            Imgproc.threshold(mat, binary, 0.0, 255.0, Imgproc.THRESH_OTSU)
-            val kernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, Size(2.0, 2.0))
-            Imgproc.morphologyEx(binary, binary, Imgproc.MORPH_OPEN, kernel)
-            Imgproc.morphologyEx(binary, binary, Imgproc.MORPH_CLOSE, kernel)
+//            val binary = Mat()
+//            Imgproc.threshold(mat, mat, 200.0, 255.0, Imgproc.THRESH_TOZERO_INV)
+//            Imgproc.threshold(mat, binary, 0.0, 255.0, Imgproc.THRESH_OTSU)
+//            val kernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, Size(2.0, 2.0))
+//            Imgproc.morphologyEx(binary, binary, Imgproc.MORPH_OPEN, kernel)
+//            Imgproc.morphologyEx(binary, binary, Imgproc.MORPH_CLOSE, kernel)
+//
+//            val contour = MatOfPoint()
+//            Core.findNonZero(binary, contour)
+//            val y_index = mutableListOf<Double>()
+//            val x_index = mutableListOf<Double>()
+//
+//            contour.toArray().forEach {
+//                y_index.add(it.x) // col index
+//                x_index.add(it.y) // row index
+//            }
 
-            val contour = MatOfPoint()
-            Core.findNonZero(binary, contour)
-            val y_index = mutableListOf<Double>()
-            val x_index = mutableListOf<Double>()
+//            val c_y = (y_index.maxOrNull()!! + y_index.minOrNull()!!) / 2 // center
+//            val c_x = (x_index.maxOrNull()!! + x_index.minOrNull()!!) / 2
+            val c_y=320.0
+            val c_x=240.0
 
-            contour.toArray().forEach {
-                y_index.add(it.x) // col index
-                x_index.add(it.y) // row index
-            }
-
-            val c_y = (y_index.maxOrNull()!! + y_index.minOrNull()!!) / 2 // center
-            val c_x = (x_index.maxOrNull()!! + x_index.minOrNull()!!) / 2
 //        val r_y = (y_index.maxOrNull()!!-y_index.minOrNull()!!) / 2 // radius
 //        val r_x = (x_index.maxOrNull()!!-x_index.minOrNull()!!) / 2
 //        val r_max = if(r_y>r_x) r_y else r_x
@@ -147,7 +151,7 @@ class Utils {
             val std_val = MatOfDouble()
             Core.meanStdDev(mat, mean_val, std_val, mask)
 
-            binary.release()
+//            binary.release()
             mask.release()
             std_val.release()
             mat.release()

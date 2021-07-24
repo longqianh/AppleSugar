@@ -43,12 +43,11 @@ class cameraFragment : Fragment() {
     private var imageCapture: ImageCapture? = null
     private lateinit var outputDirectory: File
     private lateinit var cameraExecutor: ExecutorService
-    private lateinit var cameraPreviewView: PreviewView
+//    private lateinit var cameraPreviewView: PreviewView
     private var mCameraControl: CameraControl? = null
     private var mCameraInfo: CameraInfo? = null
     private var btControl= BluetoothControl()
     private var m_address:String?=null
-    private var stateWavelengthIndex=0
     private var developer=false
     private var cameraOpened=false
     private var stateIntensity=0.0
@@ -121,18 +120,17 @@ class cameraFragment : Fragment() {
         while(appleFile.exists())
         {
             stateAppleNum++
-            appleFile=File(mediaDir, appName+"/"+ stateAppleNum.toString())
+            appleFile=File(mediaDir, "$appName/$stateAppleNum")
         }
 
         stateAppleNum--
         binding.appleNumText.text="Apple Num: $stateAppleNum"
 
-        cameraPreviewView=view.findViewById(R.id.cameraPreview)
         // Request camera permissions
         if (allPermissionsGranted()) {
             val iso=50
             val exposureTime=8000000L
-            startCamera(cameraPreviewView,iso,exposureTime)
+            startCamera(iso,exposureTime)
         } else {
             ActivityCompat.requestPermissions(
                 requireActivity(), REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
@@ -152,30 +150,37 @@ class cameraFragment : Fragment() {
         }
 
         binding.cameraCaptureButton.setOnClickListener {
-            takePhoto(stateWavelengthIndex)
+            takePhoto(viewModel.stateWavelengthIndex)
         }
 
 
         binding.oneClickButton.setOnClickListener {
             if (btControl.getConnectState()) {
                 CoroutineScope(Dispatchers.Main).launch {
+//                    btControl.sendCommand("f")
                     for (i in 0..7) {
                         async {
                             btControl.sendCommand(i.toString())
                             println("Test: in btcontrol $i")
                         }
                         async {
-                            startCamera(cameraPreviewView, isoArray[i], speedArray[i])
+                            startCamera(isoArray[i], speedArray[i])
                             println("Test: in start camera $i")
                         }
-                        delay(2000)
+                        delay(500)
                         println("Test: before take photo $i")
-                        CoroutineScope(Dispatchers.Main).launch {
-                            withContext(Dispatchers.Default){ takePhoto(i) }
-                            btControl.sendCommand("f")
-                        }
+//                        CoroutineScope(Dispatchers.Main).launch {
+//                            withContext(Dispatchers.Default){ takePhoto(i) }
+//                        }
+                        takePhoto(i)
                         println("Test: after take photo $i")
-                        delay(600)
+//                        if(i==7)
+//                        {
+//                            delay(2500)
+//                        }
+                        delay(2000)
+//                        btControl.sendCommand("f")
+
 
                     }
 
@@ -203,6 +208,16 @@ class cameraFragment : Fragment() {
             stateAppleNum--
             outputDirectory=MainActivity.getOutputDirectory(requireContext(),developer,stateAppleNum)
             binding.appleNumText.text = "Apple Num: $stateAppleNum"
+        }
+
+        binding.getSugarButton.setOnClickListener{
+            CoroutineScope(Dispatchers.Main).launch {
+                val sugar=Utils.calSugar(viewModel.inputFeatures,binding.modelSwitch.isChecked,am)
+                binding.sugarText.visibility=View.VISIBLE
+                binding.sugarText.text="Sugar: "+"%.2f".format(sugar)+" Brix"
+                binding.intensityText.visibility=View.GONE
+            }
+//
         }
 
 //        binding.cameraBackButton.setOnClickListener{
@@ -242,14 +257,19 @@ class cameraFragment : Fragment() {
                     binding.oneClickButton.visibility=View.VISIBLE
                     binding.appleNumText.visibility=View.VISIBLE
                     binding.appleNumText.text = "Apple Num: $stateAppleNum"
+                    binding.getSugarButton.visibility=View.GONE
+                    binding.modelSwitch.visibility=View.GONE
+                    binding.sugarText.visibility=View.GONE
                     outputDirectory=MainActivity.getOutputDirectory(requireContext(),developer,stateAppleNum)
                 }
                 else{
                     Toast.makeText(requireContext(),"Close developer mode.",Toast.LENGTH_SHORT).show()
                     binding.cameraNewAppleButton.visibility=View.GONE
                     binding.cameraDropAppleButton.visibility=View.GONE
-                    binding.oneClickButton.visibility=View.GONE
+//                    binding.oneClickButton.visibility=View.GONE
                     binding.appleNumText.visibility=View.GONE
+                    binding.getSugarButton.visibility=View.VISIBLE
+                    binding.modelSwitch.visibility=View.VISIBLE
                     outputDirectory=MainActivity.getOutputDirectory(requireContext(),developer,stateAppleNum)
                 }
                 true
@@ -287,9 +307,9 @@ class cameraFragment : Fragment() {
         if (btn.isSelected)
         {
             CoroutineScope(Dispatchers.Main).launch {
-                btControl.sendCommand(index.toString()) // suspend in IO thread
+                 btControl.sendCommand(index.toString()) // suspend in IO thread
             }
-            startCamera(cameraPreviewView,isoArray[index],speedArray[index])
+            startCamera(isoArray[index],speedArray[index])
 
 //            if(!cameraOpened)
 //            {
@@ -319,11 +339,11 @@ class cameraFragment : Fragment() {
 //            }
         }
 
-        stateWavelengthIndex=index
+        viewModel.stateWavelengthIndex=index
 
     }
 
-    private fun startCamera(cameraPreviewView:PreviewView,iso:Int,exposureTime:Long) {
+    private fun startCamera(iso:Int,exposureTime:Long) {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
         cameraProviderFuture.addListener({
             // Used to bind the lifecycle of cameras to the lifecycle owner
@@ -350,7 +370,7 @@ class cameraFragment : Fragment() {
             val preview = Preview.Builder()
                 .build()
                 .also {
-                    it.setSurfaceProvider(cameraPreviewView.surfaceProvider)
+                    it.setSurfaceProvider(binding.cameraPreview.surfaceProvider)
                 }
 //
 //            val imageAnalysis = ImageAnalysis.Builder()
@@ -427,9 +447,8 @@ class cameraFragment : Fragment() {
 
         })
 
-
         // 添加监听事件
-        cameraPreviewView.setOnTouchListener(cameraXPreviewViewTouchListener)
+        binding.cameraPreview.setOnTouchListener(cameraXPreviewViewTouchListener)
 
     }
 
@@ -465,6 +484,7 @@ class cameraFragment : Fragment() {
                     CoroutineScope(Dispatchers.Main).launch {
                         val intensity=Utils.getIntensityFromUri(savedUri,contentResolver)
                         binding.intensityText.text="Intensity: "+"%.2f".format(intensity)
+                        binding.intensityText.visibility=View.VISIBLE
                         viewModel.inputFeatures[index]=intensity-bk[index]
                     }
 
