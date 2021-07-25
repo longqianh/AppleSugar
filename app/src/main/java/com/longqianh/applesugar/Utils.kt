@@ -77,6 +77,7 @@ class Utils {
         suspend fun getIntensityFromUri(uri: Uri, contentResolver: ContentResolver): Double {
 //        val source = ImageDecoder.createSource(contentResolver, uri)
             val bitmap: Bitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(uri))
+
             return calIntensity(bitmap)
         }
 
@@ -105,7 +106,7 @@ class Utils {
             mat.toGray(bitmap)
             val sz: Size = Size(640.0, 480.0)
             Imgproc.resize(mat, mat, sz)
-//        image_origin.setImageBitmap(mat.toBitmap())
+//            image_origin.setImageBitmap(mat.toBitmap())
 //            val binary = Mat()
 //            Imgproc.threshold(mat, mat, 200.0, 255.0, Imgproc.THRESH_TOZERO_INV)
 //            Imgproc.threshold(mat, binary, 0.0, 255.0, Imgproc.THRESH_OTSU)

@@ -169,10 +169,37 @@
             android:layout_height="227dp"
             android:layout_gravity="center_horizontal|center_vertical"
             android:src="@drawable/focus_ring"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/cameraPreview"
+            app:layout_constraintEnd_toEndOf="@+id/cameraPreview"
             app:layout_constraintStart_toStartOf="@+id/cameraPreview"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@+id/cameraPreview" />
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="@+id/cameraPreview"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
+
+
+        <ImageView
+            android:id="@+id/intensityRing_in"
+            android:layout_width="304dp"
+            android:layout_height="275dp"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:src="@drawable/ic_intensity_ring"
+            app:layout_constraintBottom_toBottomOf="@+id/cameraPreview"
+            app:layout_constraintEnd_toEndOf="@+id/cameraPreview"
+            app:layout_constraintStart_toStartOf="@+id/cameraPreview"
+            app:layout_constraintTop_toTopOf="@+id/cameraPreview" />
+
+        <ImageView
+            android:id="@+id/intensityRing_out"
+            android:layout_width="339dp"
+            android:layout_height="308dp"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:src="@drawable/ic_intensity_ring"
+            app:layout_constraintBottom_toBottomOf="@+id/cameraPreview"
+            app:layout_constraintEnd_toEndOf="@+id/cameraPreview"
+            app:layout_constraintStart_toStartOf="@+id/cameraPreview"
+            app:layout_constraintTop_toTopOf="@+id/cameraPreview" />
 
 
         <Button
@@ -242,6 +269,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/one_click_button" />
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
     <!--        android:visibility="invisible"-->

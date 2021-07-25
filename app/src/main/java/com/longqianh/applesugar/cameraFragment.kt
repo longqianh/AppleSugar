@@ -161,19 +161,19 @@ class cameraFragment : Fragment() {
                     for (i in 0..7) {
                         async {
                             btControl.sendCommand(i.toString())
-                            println("Test: in btcontrol $i")
+//                            println("Test: in btcontrol $i")
                         }
                         async {
                             startCamera(isoArray[i], speedArray[i])
-                            println("Test: in start camera $i")
+//                            println("Test: in start camera $i")
                         }
                         delay(500)
-                        println("Test: before take photo $i")
+//                        println("Test: before take photo $i")
 //                        CoroutineScope(Dispatchers.Main).launch {
 //                            withContext(Dispatchers.Default){ takePhoto(i) }
 //                        }
                         takePhoto(i)
-                        println("Test: after take photo $i")
+//                        println("Test: after take photo $i")
 //                        if(i==7)
 //                        {
 //                            delay(2500)
@@ -216,6 +216,7 @@ class cameraFragment : Fragment() {
                 binding.sugarText.visibility=View.VISIBLE
                 binding.sugarText.text="Sugar: "+"%.2f".format(sugar)+" Brix"
                 binding.intensityText.visibility=View.GONE
+
             }
 //
         }
@@ -482,10 +483,12 @@ class cameraFragment : Fragment() {
 //                    val path= "$outputDirectory/${waveLength[stateWavelengthIndex]}$PHOTO_EXTENSION"
 //                    val intensity=Utils.getIntensityFromPath(path,am)
                     CoroutineScope(Dispatchers.Main).launch {
+
                         val intensity=Utils.getIntensityFromUri(savedUri,contentResolver)
                         binding.intensityText.text="Intensity: "+"%.2f".format(intensity)
                         binding.intensityText.visibility=View.VISIBLE
                         viewModel.inputFeatures[index]=intensity-bk[index]
+//                        Toast
                     }
 
                 }
