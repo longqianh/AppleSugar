@@ -66,7 +66,7 @@
     <string name="select_bluetooth_device">Bluetooth Devices</string>
     <string name="pick_picture_text">Pick</string>
     <string name="light_control_text">Light Control</string>
-    <string name="model_switch_text">Cla|Reg</string>
+    <string name="model_switch_text">Red|Yellow</string>
     <string name="bk_switch_text">Bk|Infer</string>
     <string name="button_730_text">730 nm</string>
     <string name="developer_text">Developer mode</string>

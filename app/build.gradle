@@ -49,6 +49,13 @@ android {
         }
     }
 
+    splits {
+        abi {
+            enable true
+            exclude 'x86','x86_64'
+        }
+    }
+
 
 }
 

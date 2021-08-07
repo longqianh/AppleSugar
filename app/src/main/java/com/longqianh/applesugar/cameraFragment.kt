@@ -178,11 +178,18 @@ class cameraFragment : Fragment() {
 //                        {
 //                            delay(2500)
 //                        }
-                        delay(2000)
+                        if(i<7)
+                        {
+                            delay(1000)
+                        }
+                        else{
+                            delay(1500)
+                        }
 //                        btControl.sendCommand("f")
 
-
                     }
+                    btControl.sendCommand("0")
+                    startCamera(isoArray[0], speedArray[0])
 
                 }
 

@@ -45,29 +45,38 @@ class Utils {
         {
 
             val inputs: Array<FloatArray> = arrayOf(sequence.map { it.toFloat() }.toFloatArray())
+//            if(modelSwitch)
+//            {
+//                val modelPath="model_reg.tflite"
+//                val interpreter = Interpreter(loadModelFile(modelPath,am)!!)
+//                val output: Array<FloatArray> = arrayOf(FloatArray(1))
+//                interpreter.run(inputs, output)
+//                return@withContext output[0][0]
+//            }
             if(modelSwitch)
             {
-                val modelPath="model_reg.tflite"
+                val modelPath="model_yellow-all.tflite"
                 val interpreter = Interpreter(loadModelFile(modelPath,am)!!)
-                val output: Array<FloatArray> = arrayOf(FloatArray(1))
+                val output: Array<FloatArray> = arrayOf(FloatArray(91))
                 interpreter.run(inputs, output)
-                return@withContext output[0][0]
+                val maxIdx = output[0].indices.maxByOrNull { output[0][it] } ?: 0
+                return@withContext (9.0+maxIdx*0.1).toFloat()
             }
             else{
-                val modelPath1="model_cla.tflite"
+                val modelPath="model_red_shuffle_96.tflite"
 //                val modelPath2="model_cla1.tflite"
-                val interpreter1 = Interpreter(loadModelFile(modelPath1,am)!!)
+                val interpreter = Interpreter(loadModelFile(modelPath,am)!!)
 //                val interpreter2 = Interpreter(loadModelFile(modelPath2,am)!!)
                 val output: Array<FloatArray> = arrayOf(FloatArray(91))
 //            Toast.makeText(requireContext(),"Result: $maxIdx,${output[0][maxIdx]}",Toast.LENGTH_SHORT).show()
-                interpreter1.run(inputs, output)
-                val maxIdx1 = output[0].indices.maxByOrNull { output[0][it] } ?: 0
+                interpreter.run(inputs, output)
+                val maxIdx = output[0].indices.maxByOrNull { output[0][it] } ?: 0
 //                interpreter2.run(inputs, output)
 //                val maxIdx2 = output[0].indices.maxByOrNull { output[0][it] } ?: 0
 //            Toast.makeText(requireContext(),"model1: ${8.0+maxIdx1*0.1}, model2: ${8.0+maxIdx2*0.1}",
 //                Toast.LENGTH_LONG).show()
 //                return@withContext (8.0 + (maxIdx1+maxIdx2)*0.5 * 0.1).toFloat()
-                return@withContext (9.0+maxIdx1*0.1).toFloat()
+                return@withContext (9.0+maxIdx*0.1).toFloat()
             }
 
         }
@@ -77,7 +86,6 @@ class Utils {
         suspend fun getIntensityFromUri(uri: Uri, contentResolver: ContentResolver): Double {
 //        val source = ImageDecoder.createSource(contentResolver, uri)
             val bitmap: Bitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(uri))
-
             return calIntensity(bitmap)
         }
 
@@ -179,8 +187,6 @@ class Utils {
         Log.d("drawContour", "${contours.get(0).size()}")
         Imgproc.drawContours(mat, contours, -1, color)
         val procbitmap = mat.toBitmap()          // Dispatchers.IO (main-safety block)
-
-
 
     }
 
